@@ -1,0 +1,90 @@
+Convert a problem statement into the typed structural representation
+R = (E, Rel, T, A, G, F) that the search operates on.
+
+Extract E, Rel, T, A, G, and F from P. Preserve explicit constraints, list
+inferred assumptions separately, and do not solve the problem.
+
+<problem>
+{{PROBLEM}}
+</problem>
+
+Return one JSON object and nothing else: no prose before or after it, no code
+fence, no commentary on your choices, no solution, no partial working.
+
+Shape:
+
+{
+  "entities":    [{"id": str, "type": <entity type>, "sort": str, "label": str}],
+  "relations":   [{"src": str, "dst": str, "rtype": <relation type>}],
+  "assumptions": [{"text": str, "load_bearing": bool, "negated": false}],
+  "goal":        {"objective": str, "constraint": str},
+  "frame":       <frame>
+}
+
+<entity type> is exactly one of, and nothing else:
+
+  constant   variable   parameter   input   output   coordinate
+
+<relation type> is exactly one of, and nothing else:
+
+  has   relates   depends_on   constrains   part_of   maps_to   equals
+  bounds   indexes   applies_to   derived_from
+
+<frame> is exactly one of, and nothing else:
+
+  algebra   algorithm-design   analysis   category-theory   combinatorics
+  dynamical-systems   euclidean-geometry   geometry   hyperbolic-geometry
+  information-theory   linguistics   logic   number-theory   optimization
+  physics   probability   projective-geometry   statistics
+  streaming-algorithms   thermodynamics   unspecified
+
+Fields.
+
+  entities     1 to 50 of them. "id" is unique across the list, 1 to 64
+               characters drawn from [A-Za-z0-9_.:-], and should read as the
+               symbol or short name the problem itself uses (n, grid,
+               target_sum). "type" is the entity's role in the closed
+               vocabulary above; the collection of these values is the type
+               map T, which is why T is not a separate field. "sort" is the
+               free-form domain sort (side_length, memory_bound, residue) and
+               may be "" when the problem supplies none. "label" is a short
+               gloss, or "".
+
+  relations    0 to 200 of them. "src" and "dst" must each be the "id" of an
+               entity you listed above; a relation naming anything else is
+               rejected. Direction is meaningful: constrains(a, b) reads "a
+               constrains b", part_of(a, b) reads "a is part of b".
+
+  assumptions  1 to 32 of them, each one statement, written in the
+               affirmative. "negated" is false in every parser output.
+
+  goal         "objective" is what the problem asks for, in one sentence.
+               "constraint" is the condition the objective is stated under,
+               in the problem's own words, or "" if there is none.
+
+  frame        the discipline the problem is posed in. Use "unspecified"
+               rather than guessing when no frame fits.
+
+Explicit constraints versus inferred assumptions. These are different things
+and the difference is the point of this stage.
+
+  An explicit constraint is written down in P. Preserve it: the condition the
+  objective is stated under goes in "goal.constraint" using the problem's own
+  words, and the rest become `constrains` or `bounds` relations between the
+  entities they hold over. Never drop, weaken, round or paraphrase away an
+  explicit constraint -- downstream stages check the candidate answer against
+  the original statement, so a constraint lost here is a wrong answer later.
+
+  An inferred assumption is not written in P but is needed for P to be well
+  posed: the ambient space, finiteness of a set, independence of samples,
+  that a quantity is real rather than complex. List these, and only these, in
+  "assumptions".
+
+  Mark "load_bearing": true on each assumption the problem stops making sense
+  without. At least one assumption must be marked true; if the problem
+  genuinely rests on nothing implicit, say so as an assumption ("the
+  statement is exact as given") and mark that one.
+
+Do not solve the problem. Do not compute or guess the answer, do not sketch a
+method, and do not invent an entity, relation or assumption that the problem
+does not support in order to make it easier to solve.

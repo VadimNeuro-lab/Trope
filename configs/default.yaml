@@ -1,0 +1,73 @@
+
+run:
+  budget: 64
+  seed: 1
+  benchmark: math500
+  backend: mock
+  backend_model: Qwen/Qwen2.5-7B-Instruct
+  reference_model: Qwen/Qwen2.5-3B-Instruct
+  parser_retries: 3
+  max_problems: null
+  out_dir: runs
+  save_traces: true
+
+sampling:
+  alpha: 1.6
+  beta: 0.0
+  gamma_init: 0.3
+  delta: 0.0
+  gamma_min: 0.02
+  gamma_max: 3.0
+  rho_max: 8.0
+  ks_alpha: 0.05
+  ks_window: 64
+  hill_exponent: 0.6666666666666666
+  ks_bootstrap: 10000
+
+controller:
+  kp: 0.5
+  ki: 0.1
+  window: 8
+  setpoint: 0.22
+  lambda_min: 0.05
+  lambda_max: 0.4
+  probe_steps: 16
+  refresh_every: 8
+  epsilon_div: 1.0e-06
+
+bandit:
+  eta: 0.1
+  window: 8
+  temperature: 1.0
+
+distance:
+  sinkhorn_iters: 50
+  sinkhorn_eps: 0.01
+  encoder: sentence
+  encoder_model: sentence-transformers/all-MiniLM-L6-v2
+  encoder_dim: 64
+  degree_scale: 1.0
+
+novelty:
+  corpus_passages: 200
+  threshold: 0.5
+  normalise: per_token
+  thresholds:
+    math_answer: 0.5
+    math_proof: 0.6
+    code: 0.5
+    creativity: 0.3
+    discovery: 0.3
+
+objective:
+  lambda_coverage: 1.0
+  lambda_compression: 0.5
+  lambda_verifier: 1.0
+
+operators:
+  tau_mu: 0.6
+  levels: [token, mutation, crossover]
+  enabled: []
+  buffer_size: 64
+
+seeds: [1, 2, 3, 4, 5]

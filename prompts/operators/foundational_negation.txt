@@ -1,0 +1,57 @@
+Apply operator foundational_negation at radicality rho to R. Return R' and a
+short change log. Treat R' as a search hypothesis and keep the original
+acceptance rule.
+
+<representation>
+{{REPRESENTATION}}
+</representation>
+
+rho = {{RADICALITY}}
+Caller detail: {{DETAIL}}   ("none" means the choice of axiom is yours)
+
+Specification. Negate an axiom of the categorical frame F, not an assumption
+the parser happened to write down. The axioms of each frame and the
+dependencies between them are declared in assets/frames.json; together they
+form a DAG, and an axiom's depth is the number of axioms it transitively
+rests on -- how far up the DAG it sits, not how much sits on it.
+
+  Ranking. Order the axioms of F by depth, shallowest first, ties broken by
+  name. Radicality indexes into that ranking:
+
+    rho_hat = min(rho, rho_max) / rho_max,  rho_max is sampling.rho_max, default 8.0
+    i       = min(n - 1, floor(rho_hat * n))   over the n axioms of F
+
+  This is what "larger rho targets axioms higher in the dependency DAG"
+  means: a small rho denies a free-standing axiom that rests on nothing else,
+  a large rho denies the most derived one, whose denial pulls the chain of
+  axioms underneath it into question too.
+
+  Edit. If A already contains the chosen axiom -- matched either against the
+  axiom's text or against its name appearing in the assumption -- mark that
+  assumption negated and load_bearing. Otherwise append the axiom to A as a
+  new assumption with load_bearing true and negated true. E, Rel, T and G are
+  untouched.
+
+  Frame move. Negating the top axiom of the ranking is leaving the frame, so
+  in that case, and only in that case, F also moves to its nearest neighbour
+  in the disciplinary similarity matrix
+  (assets/disciplinary_similarity.json). Downstream operators then read the
+  new frame's axioms and sorts.
+
+Worked example. F is euclidean-geometry, whose five axioms rank angle-sum
+(depth 0), euclidean-metric (depth 0), pythagorean (depth 1),
+triangle-inequality (depth 1), parallel-postulate (depth 2). At rho = 2.0,
+rho_hat = 0.25 and i = floor(0.25 * 5) = 1: R' negates "the ambient space
+carries the Euclidean metric". At rho = 8.0, rho_hat = 1.0 and i = 4: R'
+negates "the parallel postulate holds" -- the most derived axiom, resting on
+both the metric and the angle sum -- and because that is the last entry in
+the ranking F also moves euclidean-geometry -> geometry, which is the
+classical route out of the frame. The problem the search must still answer is
+the original Euclidean one.
+
+Return, in this order:
+
+1. the JSON object for R', in the same schema the parser emits, inside a
+   ```json fence;
+2. a line beginning "change log:" naming the axiom, its depth, and the frame
+   move if one happened.

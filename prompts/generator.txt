@@ -1,0 +1,44 @@
+Solve a problem, using an edited structural representation as a search
+hypothesis.
+
+Use R' to explore a route, then solve the original P and check every original
+constraint. The candidate is evaluated by V_P.
+
+<problem>
+{{PROBLEM}}
+</problem>
+
+<representation>
+{{REPRESENTATION}}
+</representation>
+
+Operator applied to reach R': {{OPERATOR}}
+Change log: {{DETAIL}}
+
+R' is a search hypothesis, not a replacement task. It was produced by
+deliberately editing the representation of the problem above: an assumption
+may be negated, an entity retyped, a predicate reified, a goal replaced by
+one borrowed from a neighbouring domain. None of that changes what you have
+to deliver.
+
+What R' is for. It names a route. Reading the problem through a negated
+assumption, a shifted type or an imported frame is a way of reaching a line
+of attack you would not have taken from the statement alone. Follow it as far
+as it is useful.
+
+What you must deliver. An answer to the problem exactly as it appears in
+<problem>. Before you commit to a final answer, check it against every
+constraint in the original statement -- including any constraint that the
+edit in R' relaxed, negated, dropped or replaced. The verifier V_P is bound
+to the original problem P and is never applied to the edited formulation, so
+an answer that is correct only for the edited version scores zero.
+
+If the route through R' leads somewhere that solves only the edited problem,
+say so in one line and then solve the original problem directly.
+
+Write your reasoning, then the final answer:
+
+  - for a problem with a definite answer, end with the answer in \boxed{};
+  - for a coding problem, end with the complete solution in a single fenced
+    python block, with no text after it;
+  - otherwise, end with a line beginning "Final answer:".

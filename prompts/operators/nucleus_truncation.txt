@@ -1,0 +1,39 @@
+Apply operator nucleus_truncation at radicality rho to R. Return R' and a
+short change log. Treat R' as a search hypothesis and keep the original
+acceptance rule.
+
+<representation>
+{{REPRESENTATION}}
+</representation>
+
+rho = {{RADICALITY}}
+Caller detail: {{DETAIL}}   ("none" means nothing has been fixed for you)
+
+This is a token-level operator. It does not modify R: R' = R exactly. The
+only thing it changes is the decoding distribution -- here the top-p nucleus
+the generator samples from. Do not edit the representation and do not report
+a structural change.
+
+Radicality for this operator is the width of the nucleus, and the direction
+is the one the paper states rather than the usual one: larger rho *narrows*
+the nucleus.
+
+  p = clip(1 - min(rho, rho_max) / R_max, p_min, 1.0)
+
+with R_max = 4.0 and p_min = 0.05 from the token_operators block of
+configs/decoding.yaml, and rho clamped first at rho_max, which is
+sampling.rho_max, default 8.0. Because R_max is smaller than rho_max, any rho
+at or above R_max lands on p_min: decoding is then effectively greedy on a
+very sharp head. This is the intended reading -- a radical token-level move
+here means committing hard to the model's own top continuations, not
+spreading mass over the tail.
+
+Worked example. rho = 1.0 gives p = 1 - 1.0 / 4.0 = 0.75. rho = 3.8 gives
+p = 0.05, and every larger rho gives the same p = 0.05.
+
+Return one JSON object and nothing else:
+
+{"top_p": 0.75}
+
+followed by a line beginning "change log:" naming the nucleus and the rho it
+came from.

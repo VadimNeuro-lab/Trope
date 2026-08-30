@@ -1,0 +1,21 @@
+# Exact pins for the environment the offline pipeline and the test suite were
+# verified on: Python 3.13, Windows 11 and Linux. Install with
+#     pip install -r requirements.txt -e .
+#
+# The core is deliberately small: numpy and scipy carry the sampler, the
+# optimal-transport solver, the estimators and the tests, so nothing here needs
+# a GPU. Model backends and the plotting stack are separate files, because a
+# reproducer who only wants to read and test the method should not have to
+# install torch.
+
+numpy==2.4.6
+scipy==1.18.0
+jsonschema==4.26.0
+PyYAML==6.0.3
+
+# analysis (tables and figures)
+pandas==3.0.3
+matplotlib==3.10.9
+
+# tests
+pytest==9.0.3

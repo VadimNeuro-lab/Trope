@@ -1,0 +1,16 @@
+
+inherit: ../default.yaml
+
+run:
+  benchmark: aime
+
+benchmark:
+  title: AIME 2025/26
+  citation: balunovic2025matharena
+  size: 60
+  family: math_answer
+  novelty_threshold: 0.5
+  descriptor: method tag x depth bin
+  descriptor_M: 36
+  verifier: exact_match
+  metric: Pass@10

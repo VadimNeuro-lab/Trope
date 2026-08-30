@@ -1,0 +1,16 @@
+
+inherit: ../default.yaml
+
+run:
+  benchmark: researchbench
+
+benchmark:
+  title: ResearchBench
+  citation: liu2025researchbench
+  size: 600
+  family: discovery
+  novelty_threshold: 0.3
+  descriptor: inspiration category x field
+  descriptor_M: 72
+  verifier: reference_f1
+  metric: F1 x 100

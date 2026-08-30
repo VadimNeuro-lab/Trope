@@ -1,0 +1,54 @@
+Apply operator goal_pareto_inversion at radicality rho to R. Return R' and a
+short change log. Treat R' as a search hypothesis and keep the original
+acceptance rule.
+
+<representation>
+{{REPRESENTATION}}
+</representation>
+
+rho = {{RADICALITY}}
+Caller detail: {{DETAIL}}   ("none" means the choice of criterion is yours)
+
+This is a crossover operator, so the block above holds two representations in
+order: R1, the one being edited, then R2, the donor drawn from the buffer. R2
+supplies the candidate criterion g.
+
+Specification. Replace R1's goal with a criterion borrowed from a related
+domain.
+
+  The criterion. g is R2's objective. It has to be a genuinely different
+  axis: if R2's objective is R1's objective, or R2 has no objective, the
+  application is a no-op. The paper's requirement is stronger than
+  difference -- g must not be dominated by G1 on the joint Pareto frontier of
+  the two domains, so that optimising g can move a solution that is already
+  good under G1. Prefer a criterion on which an existing good solution is
+  plausibly poor, and say in the change log why it is not dominated.
+
+  How much of the goal moves. Radicality decides whether the constraint
+  travels with the objective:
+
+    rho_hat = min(rho, rho_max) / rho_max,  rho_max is sampling.rho_max, default 8.0
+
+  At rho_hat <= 0.5, only the objective is replaced and R1 keeps its own
+  constraint, so the borrowed criterion is optimised inside the original
+  feasible set. Above 0.5, R2's constraint comes with it and the whole goal
+  is imported.
+
+  E, Rel, T, A and F stay those of R1. Only G moves.
+
+Worked example. R1 is a routing problem: objective "minimise end-to-end
+latency", constraint "each link is used at most once". R2 is a
+queueing-analysis problem whose objective is "minimise the variance of
+end-to-end latency". Mean and variance of latency do not dominate each other,
+so g qualifies. At rho = 3.0, rho_hat = 0.375, which is at or below one half,
+so R' optimises variance subject to R1's own link constraint. At rho = 6.0,
+rho_hat = 0.75 and R2's constraint arrives too. Either way the candidate is
+still scored against the original latency question by V_P; the variance axis
+is a route to a route, not the new target.
+
+Return, in this order:
+
+1. the JSON object for R', in the same schema the parser emits, inside a
+   ```json fence;
+2. a line beginning "change log:" naming the borrowed objective, whether the
+   constraint travelled with it, and why g is not dominated by G1.

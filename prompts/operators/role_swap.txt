@@ -1,0 +1,53 @@
+Apply operator role_swap at radicality rho to R. Return R' and a short change
+log. Treat R' as a search hypothesis and keep the original acceptance rule.
+
+<representation>
+{{REPRESENTATION}}
+</representation>
+
+rho = {{RADICALITY}}
+Caller detail: {{DETAIL}}   ("none" means the choice of pairs is yours)
+
+This is a crossover operator, so the block above holds two representations in
+order: R1, the one being edited, then R2, the donor drawn from the buffer.
+
+Specification. Build a structural correspondence phi from E1 to E2 and
+exchange what the corresponding entities mean.
+
+  The map phi. Within each entity role type, list R1's entities most
+  connected first (ties by id), list R2's the same way, and pair them off in
+  that order. Pairs survive only when the two entities have equal degree --
+  that is what "playing structurally equivalent roles" is checked as -- and
+  when their label and sort actually differ, since swapping identical
+  meanings is not an edit.
+
+  The swap. Radicality selects how many surviving pairs are exchanged:
+
+    k       = min(m - 1, floor(rho_hat * m)) + 1
+    rho_hat = min(rho, rho_max) / rho_max,  rho_max is sampling.rho_max, default 8.0
+
+  over the m surviving pairs, taken in id order. For each selected pair, the
+  R1 entity takes the label and the sort of its R2 counterpart.
+
+  Ids and topology of R1 are untouched: no entity is added, removed or
+  renamed, and no relation changes. The graph keeps its shape and the
+  entities change what they are about, which is the whole content of the
+  edit. A, G and F stay those of R1. If no pair survives, the application is
+  a no-op.
+
+Worked example. R1 is a scheduling problem with server (input, sort
+"machine", degree 3) and job (variable, sort "task", degree 3). R2 is a
+chemical-kinetics problem with vessel (input, sort "reactor", degree 3) and
+species (variable, sort "reagent", degree 3). At rho = 0.5, rho_hat = 0.0625
+and k = floor(0.0625 * 2) + 1 = 1, so one pair moves: job takes the label and
+sort of species. R' describes the same dependency graph, now read as reagents
+flowing through a machine -- a reading under which conservation arguments
+become available. The question to answer is still the original scheduling
+question.
+
+Return, in this order:
+
+1. the JSON object for R', in the same schema the parser emits, inside a
+   ```json fence;
+2. a line beginning "change log:" naming each swapped pair and the count k
+   that rho asked for.

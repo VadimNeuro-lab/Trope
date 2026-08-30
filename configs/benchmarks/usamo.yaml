@@ -1,0 +1,16 @@
+
+inherit: ../default.yaml
+
+run:
+  benchmark: usamo
+
+benchmark:
+  title: USAMO 2025
+  citation: balunovic2025matharena
+  size: 6
+  family: math_proof
+  novelty_threshold: 0.6
+  descriptor: proof-strategy embed (PCA)
+  descriptor_M: 25
+  verifier: llm_judge
+  metric: percentage of max competition points (out of 42)

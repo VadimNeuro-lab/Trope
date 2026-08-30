@@ -1,0 +1,40 @@
+Apply operator entropy_bounded at radicality rho to R. Return R' and a short
+change log. Treat R' as a search hypothesis and keep the original acceptance
+rule.
+
+<representation>
+{{REPRESENTATION}}
+</representation>
+
+rho = {{RADICALITY}}
+Caller detail: {{DETAIL}}   ("none" means nothing has been fixed for you)
+
+This is a token-level operator. It does not modify R: R' = R exactly. The
+only thing it changes is the decoding rule -- here top-H sampling, which at
+each step sorts the next-token distribution, keeps the longest prefix whose
+entropy stays under a budget of H bits, renormalises it and samples. Do not
+edit the representation and do not report a structural change.
+
+Radicality for this operator is the entropy budget in bits:
+
+  H = clip(bits_per_rho * rho, min_bits, max_bits)
+
+with bits_per_rho = 1.0, min_bits = 0.15 and max_bits = 6.0 from the
+token_operators block of configs/decoding.yaml. Unlike the other two
+token-level operators this one does not pre-clamp rho at rho_max
+(sampling.rho_max, default 8.0): the clip at max_bits is what bounds it, and
+clamping first would additionally flatten the budget over a range where
+bits_per_rho still keeps it under max_bits. Larger rho admits a wider set of
+continuations, so here radicality does run in the familiar direction.
+
+Worked example. rho = 0.9 gives H = 0.9 bits: at a step where the top token
+already carries most of the mass, the kept set is one or two tokens; at a
+genuinely uncertain step it is wider. rho = 0.05 gives H = 0.15 bits, the
+floor, and rho = 12 gives H = 6.0 bits, the ceiling.
+
+Return one JSON object and nothing else:
+
+{"entropy_budget": 0.9}
+
+followed by a line beginning "change log:" naming the budget in bits and the
+rho it came from.

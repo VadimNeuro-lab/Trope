@@ -1,0 +1,16 @@
+
+inherit: ../default.yaml
+
+run:
+  benchmark: uot
+
+benchmark:
+  title: UoT
+  citation: suzuki2025uot
+  size: 300
+  family: creativity
+  novelty_threshold: 0.3
+  descriptor: frame deviation x feasibility
+  descriptor_M: 30
+  verifier: llm_judge
+  metric: F-U-N composite

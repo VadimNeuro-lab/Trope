@@ -1,0 +1,107 @@
+{
+  "_comment": "Closed vocabularies for the per-benchmark descriptors of Appendix `Behavioral Descriptors`. The paper tags categorical descriptors with an extra LLM call under a closed-vocabulary instruction; the keyword bags here drive the offline stand-in tagger (trope.descriptors.KeywordTagger) and double as the text an injected LLM tagger is shown. Vocabulary ORDER is part of the contract: it fixes the axis index of every tag, so appending is safe and reordering is not. The size of each vocabulary is fixed by the grid resolution M in the paper's table.",
+  "tags": {
+    "math_method": {
+      "algebraic": ["algebra", "equation", "factor", "polynomial", "substitute", "identity", "expand", "root"],
+      "geometric": ["triangle", "circle", "angle", "area", "similar", "perpendicular", "tangent", "coordinate"],
+      "combinatorial": ["count", "choose", "permutation", "combination", "arrangement", "binomial", "pigeonhole"],
+      "number-theoretic": ["divisible", "modulo", "prime", "remainder", "gcd", "congruent", "integer solution"],
+      "inductive": ["induction", "base case", "inductive step", "for all n", "recursively", "hypothesis"],
+      "contradiction": ["contradiction", "suppose not", "assume otherwise", "impossible", "absurd"],
+      "casework": ["case", "cases", "either", "otherwise", "split into", "consider separately"],
+      "invariant": ["invariant", "unchanged", "preserved", "monovariant", "parity", "conserved"],
+      "generating-function": ["generating function", "power series", "coefficient of", "formal series"],
+      "probabilistic": ["probability", "expected", "random", "uniformly", "variance", "independent"],
+      "extremal": ["maximum", "minimum", "extremal", "largest", "smallest", "optimal", "bound"],
+      "computational": ["compute", "evaluate", "calculate", "arithmetic", "numerically", "plug in"]
+    },
+    "alg_class": {
+      "sorting": ["sort", "sorted", "order by", "comparator"],
+      "searching": ["binary search", "search for", "lower bound", "upper bound", "look up"],
+      "graph": ["graph", "vertex", "edge", "adjacency", "bfs", "dfs", "shortest path"],
+      "dynamic-programming": ["dynamic programming", "memo", "subproblem", "dp table", "bottom up"],
+      "greedy": ["greedy", "locally optimal", "pick the largest", "exchange argument"],
+      "divide-and-conquer": ["divide and conquer", "merge", "recurse on halves", "master theorem"],
+      "string": ["string", "substring", "prefix", "suffix", "palindrome", "character"],
+      "arithmetic": ["modulo", "gcd", "prime", "factorial", "combinatorics", "number theory"],
+      "hashing": ["hash", "dictionary", "counter", "set membership", "frequency map"],
+      "simulation": ["simulate", "step through", "iterate over the process", "state machine"],
+      "geometry": ["point", "segment", "convex hull", "intersection", "euclidean distance"],
+      "tree": ["tree", "root", "child", "parent", "subtree", "traversal"],
+      "backtracking": ["backtrack", "enumerate all", "prune the branch", "permute recursively"],
+      "bitmask": ["bitmask", "bitwise", "xor", "shift", "popcount"],
+      "two-pointer": ["two pointer", "left and right pointer", "shrink the window"],
+      "sliding-window": ["sliding window", "window of size", "running sum over a window"]
+    },
+    "response_tag": {
+      "list": ["1.", "2.", "- ", "bullet", "here are", "the following items"],
+      "narrative": ["once", "story", "then she", "then he", "chapter", "scene"],
+      "dialogue": ["said", "asked", "replied", "\"", "speaker a", "speaker b"],
+      "explanation": ["because", "the reason", "this works", "in other words", "that is"],
+      "instruction": ["step 1", "first,", "next,", "finally,", "you should", "do the following"],
+      "comparison": ["whereas", "compared to", "on the other hand", "unlike", "both share"],
+      "definition": ["is defined as", "refers to", "means that", "by definition"],
+      "anecdote": ["i remember", "one time", "personally", "my friend", "when i was"],
+      "argument": ["therefore", "it follows", "i argue", "the claim", "counterexample"],
+      "question": ["?", "what if", "consider whether", "one might ask"],
+      "poem": ["stanza", "rhyme", "verse", "line break", "haiku"],
+      "summary": ["in summary", "to sum up", "overall", "in short", "briefly"],
+      "plan": ["plan", "phase", "milestone", "timeline", "roadmap"],
+      "example": ["for example", "for instance", "e.g.", "such as", "a concrete case"],
+      "refusal": ["i cannot", "i am unable", "not appropriate", "i will not"],
+      "speculation": ["might", "could conceivably", "perhaps", "hypothetically", "imagine if"]
+    },
+    "operator_skeleton": {
+      "addition": ["+", "sum of", "plus", "added to"],
+      "subtraction": ["-", "difference", "minus", "subtracted"],
+      "multiplication": ["*", "product of", "times", "multiplied"],
+      "division": ["/", "ratio of", "divided by", "per unit"],
+      "power": ["**", "^", "squared", "cubed", "raised to"],
+      "exponential": ["exp(", "e^", "exponential", "growth rate"],
+      "logarithm": ["log(", "ln(", "logarithmic", "log-scale"],
+      "sine": ["sin(", "sine", "oscillat"],
+      "cosine": ["cos(", "cosine", "phase shift"],
+      "square-root": ["sqrt(", "square root", "radical"],
+      "absolute": ["abs(", "absolute value", "magnitude of"],
+      "tanh": ["tanh(", "hyperbolic tangent", "saturating"],
+      "polynomial": ["polynomial", "quadratic", "cubic term", "x^2"],
+      "constant": ["constant", "offset", "intercept", "fixed coefficient"]
+    },
+    "inspiration_category": {
+      "analogy": ["analogous", "analogy", "similar to how", "borrowed from"],
+      "mechanism": ["mechanism", "causal", "underlying process", "pathway"],
+      "dataset": ["dataset", "corpus", "sample of", "collected data", "cohort"],
+      "method-transfer": ["apply the method", "transfer", "adapt the technique", "reuse"],
+      "theory": ["theory", "theoretical", "first principles", "derivation", "axiom"],
+      "observation": ["we observe", "observed", "empirically", "measurement", "phenomenon"],
+      "instrumentation": ["instrument", "apparatus", "probe", "sensor", "assay"],
+      "scaling": ["scaling", "scale up", "larger regime", "asymptotic", "power law"],
+      "ablation": ["ablation", "remove the component", "control condition", "hold out"],
+      "benchmark": ["benchmark", "baseline comparison", "leaderboard", "evaluation suite"],
+      "application": ["application", "deployed", "in practice", "use case", "downstream"],
+      "critique": ["limitation", "flaw", "fails when", "criticism", "confound"]
+    },
+    "field": {
+      "physics": ["energy", "force", "particle", "quantum", "thermodynamic", "momentum"],
+      "biology": ["cell", "protein", "gene", "organism", "species", "enzyme"],
+      "chemistry": ["molecule", "reaction", "catalyst", "bond", "solvent", "compound"],
+      "computer-science": ["algorithm", "network", "model", "compute", "training", "software"],
+      "mathematics": ["theorem", "proof", "lemma", "conjecture", "topology", "manifold"],
+      "social-science": ["survey", "participants", "behaviour", "policy", "economic", "social"]
+    }
+  },
+  "anchors": {
+    "semantic_cluster": {
+      "procedural": "step by step procedure recipe method instructions how to carry out the task in order",
+      "analytical": "analysis data numbers evidence measurement estimate quantitative reasoning statistics",
+      "narrative": "story character scene setting happened felt journey memory told",
+      "conceptual": "concept principle framework abstraction definition theory idea category",
+      "speculative": "imagine suppose hypothetical alternative world what if counterfactual could be"
+    }
+  },
+  "markers": {
+    "feasibility_positive": ["can be", "achievable", "constructible", "exists", "we exhibit", "concretely", "satisfies the constraint"],
+    "feasibility_negative": ["impossible", "cannot", "no such", "contradiction", "infeasible", "violates", "unbounded"],
+    "flexibility": ["physical", "biological", "economic", "historical", "musical", "linguistic", "geometric", "algorithmic", "legal", "culinary"]
+  }
+}

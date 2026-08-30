@@ -1,0 +1,64 @@
+Apply operator categorical_import at radicality rho to R. Return R' and a
+short change log. Treat R' as a search hypothesis and keep the original
+acceptance rule.
+
+<representation>
+{{REPRESENTATION}}
+</representation>
+
+rho = {{RADICALITY}}
+Caller detail: {{DETAIL}}   ("none" means the choice of target frame is yours)
+
+This is a crossover operator, so the block above holds two representations in
+order: R1, the one being edited, then R2, the donor drawn from the buffer. R2
+supplies the occasion for the import; the target vocabulary comes from the
+frame chosen below.
+
+Specification. Re-sort R1's entities into the vocabulary of a more distant
+frame, along a compatibility map mu.
+
+  Target frame F2. Rank every frame other than F1 by the disciplinary
+  similarity matrix (assets/disciplinary_similarity.json), nearest first, and
+  index into that ranking with radicality:
+
+    rho_hat = min(rho, rho_max) / rho_max,  rho_max is sampling.rho_max, default 8.0
+    i       = min(n - 1, floor(rho_hat * n))   over the n other frames
+
+  This is the operator's radicality: how far the imported vocabulary is from
+  the one the problem was posed in.
+
+  The map mu. The paper maps the type vocabularies (T_1, T_R1) to
+  (T_2, T_R2). Entity role types and relation types are closed in the schema
+  and shared by every representation, so that map is the identity and there
+  is nothing to import. The vocabulary that actually differs between frames
+  is the open one, the entity sort, and mu is built over it: a greedy
+  maximum-similarity matching from the sorts occurring in R1 onto the sorts
+  F2 declares, keeping only pairs scoring above tau_mu = 0.6
+  (operators.tau_mu) and using each target sort at most once. Two sorts that
+  share a supertype in the sort lattice match at 1.0 whatever their names
+  look like, since the schema already treats them as interchangeable.
+
+  Effect. Entities whose sort mu matches are re-sorted. Entities whose sort
+  mu leaves unmatched are dropped, and their relations with them. Sorts that
+  F2 declares and mu did not use are introduced as placeholder entities named
+  "imported_<sort>" with type "parameter". F becomes F2. A and G are
+  unchanged: the goal is still the original goal, now stated over borrowed
+  vocabulary.
+
+Worked example. R1 is a cap-set problem in frame combinatorics with entities
+S (input, sort "set"), x (variable, sort "element") and n (parameter, sort
+"cardinality"). At rho = 1.0, rho_hat = 0.125 and i = floor(0.125 * 20) = 2,
+which is thermodynamics. mu pairs set -> ensemble and element -> state, both
+by shared supertype; "cardinality" matches nothing above tau_mu, so n is
+dropped along with bounds(n, S). The three unused thermodynamic sorts arrive
+as imported_distribution, imported_energy and imported_temperature. R' now
+poses the same extremal question over an ensemble of states with a
+distribution and an energy available to talk about -- the Shannon move, from
+physical entropy to a counting problem, run in reverse.
+
+Return, in this order:
+
+1. the JSON object for R', in the same schema the parser emits, inside a
+   ```json fence;
+2. a line beginning "change log:" naming F2, the pairs of mu, what was
+   dropped and what placeholders were added.

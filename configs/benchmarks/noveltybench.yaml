@@ -1,0 +1,16 @@
+
+inherit: ../default.yaml
+
+run:
+  benchmark: noveltybench
+
+benchmark:
+  title: NoveltyBench
+  citation: zhang2025noveltybench
+  size: 1100
+  family: creativity
+  novelty_threshold: 0.3
+  descriptor: resp. tag x semantic cluster
+  descriptor_M: 80
+  verifier: llm_judge
+  metric: cumulative utility on a 100-point scale

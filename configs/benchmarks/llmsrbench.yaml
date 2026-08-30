@@ -1,0 +1,16 @@
+
+inherit: ../default.yaml
+
+run:
+  benchmark: llmsrbench
+
+benchmark:
+  title: LLM-SRBench
+  citation: shojaee2025llmsrbench
+  size: 239
+  family: discovery
+  novelty_threshold: 0.3
+  descriptor: operator skeleton x depth
+  descriptor_M: 56
+  verifier: symbolic_match
+  metric: symbolic accuracy

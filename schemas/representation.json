@@ -1,0 +1,200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/trope-emnlp/trope/schemas/representation.json",
+  "title": "TROPE structural representation R = (E, Rel, T, A, G, F)",
+  "description": "Output contract for the parser Phi. Three of the validation rules stated in the paper are not expressible in JSON Schema and are enforced by trope.validation on top of this document: referential integrity of relations, the requirement that a non-empty subset of assumptions carries load_bearing = true, and consistency of the derived type map T. Frame and sort names are normalised to kebab-case before validation.",
+  "type": "object",
+  "required": [
+    "entities",
+    "assumptions",
+    "goal",
+    "frame"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "entities": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^[A-Za-z0-9_.:-]+$"
+          },
+          "type": {
+            "description": "Role in the closed vocabulary T_E.",
+            "enum": [
+              "constant",
+              "variable",
+              "parameter",
+              "input",
+              "output",
+              "coordinate"
+            ]
+          },
+          "sort": {
+            "description": "Free-form domain sort (side_length, memory_bound). Not part of T_E: the validator cannot check it, which is where high-radicality type shifts go semantically wrong.",
+            "type": "string",
+            "maxLength": 64
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 256
+          }
+        }
+      }
+    },
+    "relations": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "required": [
+          "src",
+          "dst",
+          "rtype"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "src": {
+            "type": "string",
+            "minLength": 1
+          },
+          "dst": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rtype": {
+            "enum": [
+              "has",
+              "relates",
+              "depends_on",
+              "constrains",
+              "part_of",
+              "maps_to",
+              "equals",
+              "bounds",
+              "indexes",
+              "applies_to",
+              "derived_from"
+            ]
+          },
+          "aux": {
+            "type": "string",
+            "description": "third argument of a ternary relation; reification writes relates(e_p, e_i, e_j)"
+          }
+        }
+      }
+    },
+    "assumptions": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "required": [
+          "text",
+          "load_bearing"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "load_bearing": {
+            "description": "Marks an axiom the frame rests on. Read by the foundational-negation operator.",
+            "type": "boolean"
+          },
+          "negated": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    },
+    "goal": {
+      "type": "object",
+      "required": [
+        "objective"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "objective": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "constraint": {
+          "type": "string",
+          "maxLength": 1024
+        }
+      }
+    },
+    "frame": {
+      "description": "Disciplinary frame. Must be a key of assets/disciplinary_similarity.json.",
+      "enum": [
+        "algebra",
+        "algorithm-design",
+        "analysis",
+        "category-theory",
+        "combinatorics",
+        "dynamical-systems",
+        "euclidean-geometry",
+        "geometry",
+        "hyperbolic-geometry",
+        "information-theory",
+        "linguistics",
+        "logic",
+        "number-theory",
+        "optimization",
+        "physics",
+        "probability",
+        "projective-geometry",
+        "statistics",
+        "streaming-algorithms",
+        "thermodynamics",
+        "unspecified"
+      ]
+    },
+    "history": {
+      "description": "Edit trail. Never produced by the parser; appended by operators and retained for the audit requirement in the Ethics section.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "operator",
+          "radicality"
+        ],
+        "properties": {
+          "operator": {
+            "type": "string"
+          },
+          "radicality": {
+            "type": "number",
+            "minimum": 0
+          },
+          "detail": {
+            "type": "string"
+          },
+          "parents": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

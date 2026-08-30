@@ -1,0 +1,15 @@
+
+inherit: default.yaml
+
+run:
+  backend: mock
+  benchmark: synthetic
+  budget: 8
+  max_problems: 4
+
+sampling:
+  ks_bootstrap: 200
+
+distance:
+  encoder: hash
+  encoder_dim: 64

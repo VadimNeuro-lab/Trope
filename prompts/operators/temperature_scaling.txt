@@ -1,0 +1,39 @@
+Apply operator temperature_scaling at radicality rho to R. Return R' and a
+short change log. Treat R' as a search hypothesis and keep the original
+acceptance rule.
+
+<representation>
+{{REPRESENTATION}}
+</representation>
+
+rho = {{RADICALITY}}
+Caller detail: {{DETAIL}}   ("none" means nothing has been fixed for you)
+
+This is a token-level operator. It does not modify R: R' = R, entity for
+entity, relation for relation, assumption for assumption. The only thing it
+changes is the decoding distribution the generator samples the candidate
+from. Do not edit the representation, do not add an edit record, do not
+report a structural change.
+
+Radicality for this operator is the sampling temperature. rho arrives as the
+raw |Z| draw from the stable law, so it is unbounded and must be squashed
+before use:
+
+  rho_hat = min(rho, rho_max) / rho_max,   rho_max is sampling.rho_max, default 8.0
+  T       = T0 + rho_hat * (T_max - T0)
+
+with T0 = 0.5 and T_max = 1.5 from the token_operators block of
+configs/decoding.yaml. T is monotone in rho and saturates at T_max once rho
+reaches rho_max; at rho = 0 decoding runs at the low-temperature end T0
+rather than greedily, so the operator always leaves some sampling entropy.
+
+Worked example. rho = 2.0 gives rho_hat = 2.0 / 8.0 = 0.25 and
+T = 0.5 + 0.25 * (1.5 - 0.5) = 0.75. A draw of rho = 40 -- rare but real
+under a tail index of 1.6 -- gives rho_hat = 1.0 and T = 1.5, not T = 40.
+
+Return one JSON object and nothing else:
+
+{"temperature": 0.75}
+
+followed by a line beginning "change log:" naming the temperature and the rho
+it came from.

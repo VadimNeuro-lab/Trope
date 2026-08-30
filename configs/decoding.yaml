@@ -1,0 +1,44 @@
+
+parser:
+  temperature: 0.0
+  top_p: null
+  max_tokens: 1024
+  retries: 3
+  stop: ["\n\n\n"]
+
+generator:
+  temperature: 0.7
+  top_p: 0.95
+  max_tokens: 1024
+  stop: []
+
+operator_proposer:
+  temperature: 0.7
+  top_p: 0.95
+  max_tokens: 512
+
+reference_lm:
+  window_tokens: 512
+  window_stride: 512
+  max_corpus_tokens: 32768
+
+token_operators:
+  temperature_scaling:
+    T0: 0.5
+    T_max: 1.5
+  nucleus_truncation:
+    p_min: 0.05
+  entropy_bounded:
+    bits_per_rho: 1.0
+    max_bits: 6.0
+    min_bits: 0.15
+
+baselines:
+  greedy: {temperature: 0.0}
+  temperature_07: {temperature: 0.7}
+  temperature_10: {temperature: 1.0}
+  temperature_12: {temperature: 1.2}
+  top_p: {temperature: 1.0, top_p: 0.95}
+  min_p: {temperature: 1.0, min_p: 0.1}
+  top_h: {temperature: 1.0, entropy_budget: 1.0}
+  eta_sampling: {temperature: 1.0, eta: 0.0003}

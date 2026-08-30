@@ -1,0 +1,56 @@
+Apply operator type_shifting at radicality rho to R. Return R' and a short
+change log. Treat R' as a search hypothesis and keep the original acceptance
+rule.
+
+<representation>
+{{REPRESENTATION}}
+</representation>
+
+rho = {{RADICALITY}}
+Caller detail: {{DETAIL}}   ("none" means the choice of entity is yours)
+
+Specification. Pick one entity e, then retype it and repair the relations
+incident to it.
+
+  Target entity. Sampled with probability proportional to degree(e) + 1. The
+  paper says proportional to degree; the +1 is there because a degree-0
+  entity would otherwise be unreachable, and a freshly parsed R usually has
+  several.
+
+  Target type tau. Take the entity role types other than T(e), ranked by the
+  T_E similarity matrix in assets/type_similarity.json from most to least
+  similar to T(e). Radicality indexes into that ranking:
+
+    rho_hat = min(rho, rho_max) / rho_max,  rho_max is sampling.rho_max, default 8.0
+    i       = min(n - 1, floor(rho_hat * n))   over the n ranked candidates
+
+  so a small rho moves the entity to its nearest neighbour in type space and
+  a large rho moves it as far as the vocabulary allows. Set T(e) = tau.
+
+  Relation repair. Relations incident to e are retyped where the rewrite is
+  unambiguous: depends_on becomes derived_from when e becomes an output at
+  the source end, derived_from becomes depends_on when e becomes an input or
+  a parameter, depends_on becomes indexes when e becomes a coordinate, and
+  constrains becomes bounds when e becomes an output at the destination end.
+  Any relation matching none of these keeps its type.
+
+  Sort shift. When rho_hat > 0.5 the entity's "sort" also moves to a sibling
+  sort -- another sort under the same supertype in the sort lattice of
+  assets/type_similarity.json. This is the part of the edit the schema cannot
+  see: both sorts validate, and the semantics change anyway.
+
+Worked example. R holds the entity budget with type "parameter", sort
+"memory_bound" and degree 3, and the relation depends_on(budget, plan). The
+ranking from "parameter" is variable, constant, input, coordinate, output. At
+rho = 6.0, rho_hat = 0.75 and i = floor(0.75 * 5) = 3, so tau = "coordinate":
+the fixed resource budget becomes an axis the problem is indexed along.
+depends_on(budget, plan) is repaired to indexes(budget, plan). Since
+rho_hat > 0.5 the sort moves within numeric_bound, memory_bound to
+wall_clock, so R' now describes a family of plans indexed by a time budget.
+
+Return, in this order:
+
+1. the JSON object for R', in the same schema the parser emits, inside a
+   ```json fence;
+2. a line beginning "change log:" naming the entity, the old and new type,
+   any retyped relations, and the sort shift if one happened.

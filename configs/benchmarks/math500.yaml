@@ -1,0 +1,16 @@
+
+inherit: ../default.yaml
+
+run:
+  benchmark: math500
+
+benchmark:
+  title: MATH-500
+  citation: hendrycks2021math
+  size: 500
+  family: math_answer
+  novelty_threshold: 0.5
+  descriptor: method tag x length bin
+  descriptor_M: 48
+  verifier: exact_match
+  metric: Pass@10

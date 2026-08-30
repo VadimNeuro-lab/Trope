@@ -1,0 +1,48 @@
+Apply operator assumption_violation at radicality rho to R. Return R' and a
+short change log. Treat R' as a search hypothesis and keep the original
+acceptance rule.
+
+<representation>
+{{REPRESENTATION}}
+</representation>
+
+rho = {{RADICALITY}}
+Caller detail: {{DETAIL}}   ("none" means the choice of assumptions is yours)
+
+Specification. Sample a subset A_flip of the assumption set A, uniformly and
+without replacement, with
+
+  |A_flip| = min(ceil(rho), |A|)
+
+and replace each a in A_flip with its negation. A negated assumption keeps
+its text and its load_bearing flag and carries "negated": true; it reads as
+"not (<text>)". Nothing else moves: E, Rel, T, G and F are unchanged, and the
+assumptions outside A_flip are unchanged.
+
+Radicality for this operator is the *number* of assumptions inverted, not the
+importance of any one of them. rho is rounded up, so any rho in (0, 1] flips
+exactly one assumption and rho = 2.4 flips three; a rho larger than |A| flips
+every assumption, and rho = 0 flips none and is reported as a no-op rather
+than as an edit.
+
+Choosing which to flip is deliberately uniform. Weighting the draw towards
+load_bearing assumptions would duplicate foundational_negation, which is the
+operator that targets the frame's axioms by how much rests on them.
+
+Worked example. In "find the largest cap-set in F_3^n", A contains "n is
+finite" (load_bearing) and "the ambient field has characteristic 3". At
+rho = 0.8, |A_flip| = 1; if the draw picks the first, R' carries
+
+  {"text": "n is finite", "load_bearing": true, "negated": true}
+
+which reads as "not (n is finite)" -- the asymptotic version of the question,
+whose lower bound was the target FunSearch improved. The goal, the entities
+and the frame are untouched: the search is still expected to answer the
+original finite-n question.
+
+Return, in this order:
+
+1. the JSON object for R', in the same schema the parser emits, inside a
+   ```json fence;
+2. a line beginning "change log:" naming each flipped assumption and the
+   count that rho asked for.

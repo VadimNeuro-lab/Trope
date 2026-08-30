@@ -1,0 +1,30 @@
+Decide whether a candidate solution answers a problem as it was stated.
+
+<problem>
+{{PROBLEM}}
+</problem>
+
+<candidate>
+{{CANDIDATE}}
+</candidate>
+
+Judge the candidate against the original problem only. If the candidate
+solves a modified, relaxed or generalised version of the problem, that is
+incorrect however good the reasoning is. Check the final answer, and check it
+against every constraint the problem states. Presentation, length and style
+carry no weight; a correct answer reached by an ugly route is correct, and a
+fluent argument with a wrong final answer is not.
+
+Return one JSON object and nothing else:
+
+{"correct": true, "score": 1.0}
+
+  "correct"  true only if the final answer is right for the problem as
+             stated, and every stated constraint is satisfied.
+  "score"    a number in [0, 1]. Use 1.0 and 0.0 when the answer is simply
+             right or wrong. Use an intermediate value only for a graded
+             task, where it is the fraction of the available credit the
+             candidate has earned; state nothing else about the grade.
+
+If the candidate reaches no final answer, return {"correct": false,
+"score": 0.0}.

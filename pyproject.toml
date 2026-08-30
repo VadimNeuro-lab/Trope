@@ -1,0 +1,81 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trope"
+version = "1.0.0"
+description = "Typed Representations and Operators for Problem Editing in LLM Reasoning"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [
+  { name = "Vadim Bikbulatov" },
+  { name = "Ovanes Petrosian" },
+]
+keywords = ["llm", "inference-time-search", "quality-diversity", "reasoning"]
+classifiers = [
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+# The core is numpy + scipy only, so the whole pipeline and the test suite run
+# on a laptop with no GPU. Everything that needs a model is an extra.
+dependencies = [
+  "numpy>=1.24,<3",
+  "scipy>=1.10",
+  "jsonschema>=4.17",
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+hf = [
+  "torch>=2.1",
+  "transformers>=4.44",
+  "accelerate>=0.30",
+  "sentencepiece>=0.2",
+]
+vllm = ["vllm>=0.6"]
+encoder = ["sentence-transformers>=3.0"]
+analysis = ["pandas>=2.0", "matplotlib>=3.7"]
+dev = [
+  "pytest>=7.4",
+  "pytest-timeout>=2.2",
+  "ruff>=0.5",
+]
+all = ["trope[hf,encoder,analysis,dev]"]
+
+[project.scripts]
+trope = "trope.cli:main"
+
+[project.urls]
+Paper = "https://aclanthology.org/"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+trope = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q --strict-markers"
+markers = [
+  "slow: takes more than a few seconds",
+  "extras: needs an optional dependency (torch, vllm, sentence-transformers)",
+]
+
+[tool.ruff]
+line-length = 90
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["E501", "B008"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["B011"]

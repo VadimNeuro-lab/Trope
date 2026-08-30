@@ -1,0 +1,992 @@
+{
+ "_comment": "Per-frame reference material. `keywords` is the fixed reference corpus from which the disciplinary similarity matrix is built (scripts/build_assets.py). `sorts` is the type vocabulary a frame mandates, read by categorical import. `axioms` is the dependency DAG read by foundational negation: `supports` lists the axioms that FAIL if this one is negated, so an axiom many others rest on is load-bearing and is targeted at larger radicality. The primitives the paper names as examples -- the triangle inequality, the law of excluded middle, sample independence -- are foundations here, not consequences.",
+ "frames": {
+  "algebra": {
+   "keywords": [
+    "group",
+    "ring",
+    "field",
+    "polynomial",
+    "ideal",
+    "homomorphism",
+    "commutative",
+    "identity element",
+    "factorisation",
+    "root"
+   ],
+   "sorts": [
+    "element",
+    "operation",
+    "identity",
+    "inverse",
+    "polynomial",
+    "degree"
+   ],
+   "axioms": [
+    {
+     "name": "associativity",
+     "text": "the binary operation is associative",
+     "supports": [
+      "cancellation",
+      "factorisation-uniqueness"
+     ]
+    },
+    {
+     "name": "commutativity",
+     "text": "the binary operation is commutative",
+     "supports": [
+      "factorisation-uniqueness"
+     ]
+    },
+    {
+     "name": "distributivity",
+     "text": "multiplication distributes over addition",
+     "supports": [
+      "cancellation"
+     ]
+    },
+    {
+     "name": "cancellation",
+     "text": "cancellation holds in the domain",
+     "supports": []
+    },
+    {
+     "name": "factorisation-uniqueness",
+     "text": "factorisation into irreducibles is unique",
+     "supports": []
+    }
+   ]
+  },
+  "algorithm-design": {
+   "keywords": [
+    "algorithm",
+    "complexity",
+    "invariant",
+    "recurrence",
+    "data structure",
+    "amortised",
+    "greedy",
+    "dynamic programming",
+    "worst case",
+    "correctness proof"
+   ],
+   "sorts": [
+    "input",
+    "output",
+    "state",
+    "invariant",
+    "cost",
+    "bound"
+   ],
+   "axioms": [
+    {
+     "name": "sequential-model",
+     "text": "computation proceeds on a sequential RAM model",
+     "supports": []
+    },
+    {
+     "name": "unit-cost",
+     "text": "primitive operations cost unit time",
+     "supports": [
+      "sequential-model"
+     ]
+    },
+    {
+     "name": "random-access",
+     "text": "memory supports constant-time random access",
+     "supports": [
+      "sequential-model",
+      "offline-processing"
+     ]
+    },
+    {
+     "name": "deterministic-input",
+     "text": "the input is fixed and fully known in advance",
+     "supports": []
+    },
+    {
+     "name": "offline-processing",
+     "text": "the whole input may be revisited",
+     "supports": [
+      "deterministic-input"
+     ]
+    }
+   ]
+  },
+  "analysis": {
+   "keywords": [
+    "limit",
+    "continuity",
+    "derivative",
+    "integral",
+    "convergence",
+    "sequence",
+    "series",
+    "compactness",
+    "uniform",
+    "measure"
+   ],
+   "sorts": [
+    "function",
+    "sequence",
+    "limit",
+    "neighbourhood",
+    "measure",
+    "bound"
+   ],
+   "axioms": [
+    {
+     "name": "completeness",
+     "text": "the underlying field is complete",
+     "supports": [
+      "convergence-of-cauchy",
+      "extreme-value"
+     ]
+    },
+    {
+     "name": "convergence-of-cauchy",
+     "text": "every Cauchy sequence converges",
+     "supports": []
+    },
+    {
+     "name": "extreme-value",
+     "text": "continuous functions on compacts attain their bounds",
+     "supports": []
+    },
+    {
+     "name": "archimedean",
+     "text": "the order is Archimedean",
+     "supports": [
+      "convergence-of-cauchy"
+     ]
+    }
+   ]
+  },
+  "category-theory": {
+   "keywords": [
+    "category",
+    "functor",
+    "natural transformation",
+    "morphism",
+    "limit",
+    "adjunction",
+    "universal property",
+    "composition",
+    "object",
+    "duality"
+   ],
+   "sorts": [
+    "object",
+    "morphism",
+    "functor",
+    "diagram",
+    "cone"
+   ],
+   "axioms": [
+    {
+     "name": "composition-associativity",
+     "text": "composition of morphisms is associative",
+     "supports": [
+      "functoriality"
+     ]
+    },
+    {
+     "name": "identity-morphisms",
+     "text": "every object has an identity morphism",
+     "supports": [
+      "functoriality"
+     ]
+    },
+    {
+     "name": "functoriality",
+     "text": "functors preserve composition and identities",
+     "supports": []
+    }
+   ]
+  },
+  "combinatorics": {
+   "keywords": [
+    "counting",
+    "bijection",
+    "graph",
+    "permutation",
+    "partition",
+    "extremal",
+    "pigeonhole",
+    "generating function",
+    "set system",
+    "cap set"
+   ],
+   "sorts": [
+    "set",
+    "element",
+    "cardinality",
+    "family",
+    "index"
+   ],
+   "axioms": [
+    {
+     "name": "finiteness",
+     "text": "the ground set is finite",
+     "supports": [
+      "exhaustive-enumeration",
+      "pigeonhole"
+     ]
+    },
+    {
+     "name": "exhaustive-enumeration",
+     "text": "every configuration can be enumerated",
+     "supports": []
+    },
+    {
+     "name": "pigeonhole",
+     "text": "the pigeonhole principle applies",
+     "supports": []
+    },
+    {
+     "name": "distinguishability",
+     "text": "objects being counted are distinguishable",
+     "supports": [
+      "pigeonhole"
+     ]
+    }
+   ]
+  },
+  "dynamical-systems": {
+   "keywords": [
+    "orbit",
+    "attractor",
+    "fixed point",
+    "stability",
+    "flow",
+    "bifurcation",
+    "phase space",
+    "trajectory",
+    "lyapunov",
+    "iteration"
+   ],
+   "sorts": [
+    "state",
+    "trajectory",
+    "parameter",
+    "time",
+    "attractor"
+   ],
+   "axioms": [
+    {
+     "name": "determinism",
+     "text": "the evolution map is deterministic",
+     "supports": [
+      "uniqueness-of-orbits"
+     ]
+    },
+    {
+     "name": "uniqueness-of-orbits",
+     "text": "orbits through a point are unique",
+     "supports": []
+    },
+    {
+     "name": "autonomy",
+     "text": "the dynamics do not depend explicitly on time",
+     "supports": []
+    },
+    {
+     "name": "smoothness",
+     "text": "the evolution map is differentiable",
+     "supports": [
+      "uniqueness-of-orbits"
+     ]
+    }
+   ]
+  },
+  "euclidean-geometry": {
+   "keywords": [
+    "triangle",
+    "circle",
+    "angle",
+    "distance",
+    "congruence",
+    "parallel",
+    "area",
+    "perpendicular",
+    "inequality",
+    "similarity"
+   ],
+   "sorts": [
+    "point",
+    "line",
+    "triangle",
+    "side_length",
+    "angle",
+    "area"
+   ],
+   "axioms": [
+    {
+     "name": "euclidean-metric",
+     "text": "the ambient space carries the Euclidean metric",
+     "supports": []
+    },
+    {
+     "name": "triangle-inequality",
+     "text": "the triangle inequality holds",
+     "supports": [
+      "euclidean-metric"
+     ]
+    },
+    {
+     "name": "parallel-postulate",
+     "text": "the parallel postulate holds",
+     "supports": [
+      "euclidean-metric",
+      "angle-sum"
+     ]
+    },
+    {
+     "name": "angle-sum",
+     "text": "the angles of a triangle sum to pi",
+     "supports": []
+    },
+    {
+     "name": "pythagorean",
+     "text": "the Pythagorean relation holds for right triangles",
+     "supports": [
+      "euclidean-metric"
+     ]
+    }
+   ]
+  },
+  "geometry": {
+   "keywords": [
+    "shape",
+    "metric",
+    "curvature",
+    "transformation",
+    "invariant",
+    "symmetry",
+    "coordinate",
+    "projection",
+    "manifold",
+    "incidence"
+   ],
+   "sorts": [
+    "point",
+    "line",
+    "region",
+    "metric",
+    "transformation"
+   ],
+   "axioms": [
+    {
+     "name": "metric-structure",
+     "text": "distances between points are well defined",
+     "supports": []
+    },
+    {
+     "name": "triangle-inequality",
+     "text": "the triangle inequality holds",
+     "supports": [
+      "metric-structure"
+     ]
+    },
+    {
+     "name": "symmetry-of-distance",
+     "text": "distance is symmetric",
+     "supports": [
+      "metric-structure"
+     ]
+    },
+    {
+     "name": "flatness",
+     "text": "the ambient space has zero curvature",
+     "supports": []
+    }
+   ]
+  },
+  "hyperbolic-geometry": {
+   "keywords": [
+    "hyperbolic",
+    "curvature",
+    "geodesic",
+    "poincare disk",
+    "ideal point",
+    "horocycle",
+    "angle defect",
+    "saddle",
+    "lobachevsky",
+    "parallel"
+   ],
+   "sorts": [
+    "point",
+    "geodesic",
+    "angle",
+    "curvature",
+    "defect"
+   ],
+   "axioms": [
+    {
+     "name": "negative-curvature",
+     "text": "the ambient curvature is negative",
+     "supports": [
+      "angle-defect",
+      "divergent-parallels"
+     ]
+    },
+    {
+     "name": "angle-defect",
+     "text": "triangle angle sums fall below pi",
+     "supports": []
+    },
+    {
+     "name": "divergent-parallels",
+     "text": "parallels through a point are not unique",
+     "supports": []
+    }
+   ]
+  },
+  "information-theory": {
+   "keywords": [
+    "entropy",
+    "mutual information",
+    "code length",
+    "channel",
+    "compression",
+    "divergence",
+    "source coding",
+    "typical set",
+    "redundancy",
+    "capacity"
+   ],
+   "sorts": [
+    "symbol",
+    "distribution",
+    "code",
+    "entropy",
+    "channel",
+    "rate"
+   ],
+   "axioms": [
+    {
+     "name": "memoryless-source",
+     "text": "the source emits symbols independently",
+     "supports": [
+      "asymptotic-equipartition",
+      "additivity-of-entropy"
+     ]
+    },
+    {
+     "name": "asymptotic-equipartition",
+     "text": "the asymptotic equipartition property holds",
+     "supports": []
+    },
+    {
+     "name": "additivity-of-entropy",
+     "text": "entropy is additive over independent sources",
+     "supports": []
+    },
+    {
+     "name": "stationarity",
+     "text": "the source statistics do not drift",
+     "supports": [
+      "asymptotic-equipartition"
+     ]
+    }
+   ]
+  },
+  "linguistics": {
+   "keywords": [
+    "syntax",
+    "semantics",
+    "morphology",
+    "grammar",
+    "constituent",
+    "lexicon",
+    "compositionality",
+    "utterance",
+    "pragmatics",
+    "corpus"
+   ],
+   "sorts": [
+    "token",
+    "constituent",
+    "feature",
+    "rule",
+    "meaning"
+   ],
+   "axioms": [
+    {
+     "name": "compositionality",
+     "text": "meaning composes from constituent meanings",
+     "supports": []
+    },
+    {
+     "name": "context-independence",
+     "text": "lexical meaning does not depend on context",
+     "supports": [
+      "compositionality"
+     ]
+    },
+    {
+     "name": "discreteness",
+     "text": "linguistic units are discrete",
+     "supports": [
+      "compositionality",
+      "context-independence"
+     ]
+    }
+   ]
+  },
+  "logic": {
+   "keywords": [
+    "proposition",
+    "inference",
+    "quantifier",
+    "proof",
+    "soundness",
+    "completeness",
+    "contradiction",
+    "model",
+    "deduction",
+    "truth value"
+   ],
+   "sorts": [
+    "proposition",
+    "predicate",
+    "term",
+    "proof",
+    "model"
+   ],
+   "axioms": [
+    {
+     "name": "classical-semantics",
+     "text": "every proposition is true or false",
+     "supports": []
+    },
+    {
+     "name": "excluded-middle",
+     "text": "the law of excluded middle holds",
+     "supports": [
+      "classical-semantics",
+      "double-negation"
+     ]
+    },
+    {
+     "name": "double-negation",
+     "text": "double negation may be eliminated",
+     "supports": [
+      "classical-semantics"
+     ]
+    },
+    {
+     "name": "non-contradiction",
+     "text": "no proposition is both true and false",
+     "supports": [
+      "classical-semantics"
+     ]
+    }
+   ]
+  },
+  "number-theory": {
+   "keywords": [
+    "divisibility",
+    "prime",
+    "congruence",
+    "modular arithmetic",
+    "residue",
+    "diophantine",
+    "gcd",
+    "quadratic residue",
+    "totient",
+    "integer"
+   ],
+   "sorts": [
+    "integer",
+    "modulus",
+    "residue",
+    "prime",
+    "exponent"
+   ],
+   "axioms": [
+    {
+     "name": "integrality",
+     "text": "the quantities of interest are integers",
+     "supports": [
+      "unique-factorisation",
+      "well-ordering"
+     ]
+    },
+    {
+     "name": "unique-factorisation",
+     "text": "factorisation into primes is unique",
+     "supports": []
+    },
+    {
+     "name": "well-ordering",
+     "text": "every non-empty set of positive integers has a least element",
+     "supports": []
+    },
+    {
+     "name": "finite-modulus",
+     "text": "arithmetic is carried out modulo a fixed integer",
+     "supports": []
+    }
+   ]
+  },
+  "optimization": {
+   "keywords": [
+    "objective",
+    "constraint",
+    "feasible region",
+    "gradient",
+    "convexity",
+    "duality",
+    "optimum",
+    "relaxation",
+    "lagrangian",
+    "search space"
+   ],
+   "sorts": [
+    "variable",
+    "objective",
+    "constraint",
+    "bound",
+    "multiplier"
+   ],
+   "axioms": [
+    {
+     "name": "convexity",
+     "text": "the objective and feasible set are convex",
+     "supports": [
+      "local-is-global",
+      "strong-duality"
+     ]
+    },
+    {
+     "name": "local-is-global",
+     "text": "every local optimum is global",
+     "supports": []
+    },
+    {
+     "name": "strong-duality",
+     "text": "strong duality holds",
+     "supports": []
+    },
+    {
+     "name": "linearity-of-constraints",
+     "text": "constraints are linear",
+     "supports": [
+      "convexity",
+      "strong-duality"
+     ]
+    }
+   ]
+  },
+  "physics": {
+   "keywords": [
+    "force",
+    "energy",
+    "conservation",
+    "symmetry",
+    "field",
+    "momentum",
+    "equation of motion",
+    "frame of reference",
+    "observable",
+    "dimension"
+   ],
+   "sorts": [
+    "quantity",
+    "field",
+    "constant",
+    "observable",
+    "unit"
+   ],
+   "axioms": [
+    {
+     "name": "conservation-of-energy",
+     "text": "total energy is conserved",
+     "supports": []
+    },
+    {
+     "name": "time-translation-symmetry",
+     "text": "the laws are invariant under time translation",
+     "supports": [
+      "conservation-of-energy"
+     ]
+    },
+    {
+     "name": "locality",
+     "text": "interactions are local",
+     "supports": []
+    }
+   ]
+  },
+  "probability": {
+   "keywords": [
+    "random variable",
+    "distribution",
+    "expectation",
+    "independence",
+    "conditional",
+    "measure",
+    "variance",
+    "law of large numbers",
+    "sample space",
+    "event"
+   ],
+   "sorts": [
+    "event",
+    "variable",
+    "distribution",
+    "expectation",
+    "measure"
+   ],
+   "axioms": [
+    {
+     "name": "sample-independence",
+     "text": "samples are drawn independently",
+     "supports": [
+      "law-of-large-numbers",
+      "product-factorisation"
+     ]
+    },
+    {
+     "name": "law-of-large-numbers",
+     "text": "sample means converge to the expectation",
+     "supports": []
+    },
+    {
+     "name": "product-factorisation",
+     "text": "joint densities factorise over samples",
+     "supports": []
+    },
+    {
+     "name": "countable-additivity",
+     "text": "the measure is countably additive",
+     "supports": []
+    },
+    {
+     "name": "identical-distribution",
+     "text": "samples are identically distributed",
+     "supports": [
+      "law-of-large-numbers"
+     ]
+    }
+   ]
+  },
+  "projective-geometry": {
+   "keywords": [
+    "projective plane",
+    "cross ratio",
+    "duality",
+    "collineation",
+    "point at infinity",
+    "conic",
+    "incidence",
+    "homogeneous coordinates",
+    "pencil",
+    "perspectivity"
+   ],
+   "sorts": [
+    "point",
+    "line",
+    "conic",
+    "cross_ratio",
+    "coordinate"
+   ],
+   "axioms": [
+    {
+     "name": "incidence-structure",
+     "text": "any two lines meet in exactly one point",
+     "supports": [
+      "duality",
+      "cross-ratio-invariance"
+     ]
+    },
+    {
+     "name": "duality",
+     "text": "points and lines are interchangeable",
+     "supports": []
+    },
+    {
+     "name": "cross-ratio-invariance",
+     "text": "the cross ratio is projectively invariant",
+     "supports": []
+    }
+   ]
+  },
+  "statistics": {
+   "keywords": [
+    "estimator",
+    "hypothesis test",
+    "confidence interval",
+    "likelihood",
+    "bias",
+    "variance",
+    "sampling distribution",
+    "p-value",
+    "model fit",
+    "residual"
+   ],
+   "sorts": [
+    "sample",
+    "estimator",
+    "parameter",
+    "statistic",
+    "interval"
+   ],
+   "axioms": [
+    {
+     "name": "correct-specification",
+     "text": "the model family contains the truth",
+     "supports": [
+      "consistency-of-mle",
+      "valid-coverage"
+     ]
+    },
+    {
+     "name": "consistency-of-mle",
+     "text": "the maximum-likelihood estimator is consistent",
+     "supports": []
+    },
+    {
+     "name": "valid-coverage",
+     "text": "intervals attain their nominal coverage",
+     "supports": []
+    },
+    {
+     "name": "exchangeability",
+     "text": "observations are exchangeable",
+     "supports": [
+      "valid-coverage"
+     ]
+    }
+   ]
+  },
+  "streaming-algorithms": {
+   "keywords": [
+    "stream",
+    "single pass",
+    "sublinear space",
+    "sketch",
+    "quantile",
+    "heavy hitter",
+    "approximation",
+    "update",
+    "memory bound",
+    "online"
+   ],
+   "sorts": [
+    "stream",
+    "sketch",
+    "memory_bound",
+    "pass_count",
+    "estimate"
+   ],
+   "axioms": [
+    {
+     "name": "single-pass",
+     "text": "the input is read once, in order",
+     "supports": [
+      "no-rewind"
+     ]
+    },
+    {
+     "name": "no-rewind",
+     "text": "earlier stream elements cannot be revisited",
+     "supports": []
+    },
+    {
+     "name": "bounded-memory",
+     "text": "working memory is sublinear in the stream length",
+     "supports": []
+    },
+    {
+     "name": "adversarial-order",
+     "text": "the stream order is adversarial",
+     "supports": []
+    }
+   ]
+  },
+  "thermodynamics": {
+   "keywords": [
+    "entropy",
+    "temperature",
+    "ensemble",
+    "equilibrium",
+    "free energy",
+    "state variable",
+    "heat",
+    "partition function",
+    "microstate",
+    "reversible"
+   ],
+   "sorts": [
+    "state",
+    "ensemble",
+    "distribution",
+    "temperature",
+    "energy"
+   ],
+   "axioms": [
+    {
+     "name": "equilibrium",
+     "text": "the system is at thermodynamic equilibrium",
+     "supports": []
+    },
+    {
+     "name": "ergodicity",
+     "text": "time averages equal ensemble averages",
+     "supports": [
+      "equilibrium"
+     ]
+    },
+    {
+     "name": "extensivity",
+     "text": "entropy is extensive",
+     "supports": [
+      "equilibrium",
+      "second-law"
+     ]
+    },
+    {
+     "name": "second-law",
+     "text": "entropy of an isolated system does not decrease",
+     "supports": []
+    }
+   ]
+  },
+  "unspecified": {
+   "keywords": [
+    "problem",
+    "solution",
+    "constraint",
+    "objective",
+    "quantity",
+    "relation",
+    "condition",
+    "statement",
+    "case",
+    "argument"
+   ],
+   "sorts": [
+    "quantity",
+    "condition",
+    "object"
+   ],
+   "axioms": [
+    {
+     "name": "well-posedness",
+     "text": "the problem as stated has a solution",
+     "supports": [
+      "uniqueness"
+     ]
+    },
+    {
+     "name": "uniqueness",
+     "text": "the solution is unique",
+     "supports": []
+    }
+   ]
+  }
+ }
+}

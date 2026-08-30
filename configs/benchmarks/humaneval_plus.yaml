@@ -1,0 +1,16 @@
+
+inherit: ../default.yaml
+
+run:
+  benchmark: humaneval_plus
+
+benchmark:
+  title: HumanEval+
+  citation: liu2023humanevalplus
+  size: 164
+  family: code
+  novelty_threshold: 0.5
+  descriptor: ctrl-flow signature x depth
+  descriptor_M: 40
+  verifier: unit_tests
+  metric: Pass@10

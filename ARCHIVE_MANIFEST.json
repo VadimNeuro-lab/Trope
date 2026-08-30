@@ -1,0 +1,29 @@
+{
+  "required": [
+    "prompts/parser.txt",
+    "prompts/generator.txt",
+    "schemas/representation.json",
+    "configs/decoding.yaml",
+    "prompts/operators/assumption_violation.txt",
+    "prompts/operators/categorical_import.txt",
+    "prompts/operators/entropy_bounded.txt",
+    "prompts/operators/foundational_negation.txt",
+    "prompts/operators/goal_pareto_inversion.txt",
+    "prompts/operators/nucleus_truncation.txt",
+    "prompts/operators/reification.txt",
+    "prompts/operators/role_swap.txt",
+    "prompts/operators/structural_transplant.txt",
+    "prompts/operators/temperature_scaling.txt",
+    "prompts/operators/type_shifting.txt"
+  ],
+  "n_files": 133,
+  "trees": [
+    "src",
+    "prompts",
+    "schemas",
+    "configs",
+    "assets",
+    "scripts",
+    "tests"
+  ]
+}

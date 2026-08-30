@@ -1,0 +1,16 @@
+
+inherit: ../default.yaml
+
+run:
+  benchmark: creativityprism
+
+benchmark:
+  title: CreativityPrism
+  citation: hou2025creativityprism
+  size: 800
+  family: creativity
+  novelty_threshold: 0.3
+  descriptor: rubric dimension grid
+  descriptor_M: 60
+  verifier: llm_judge
+  metric: Q-N-D composite

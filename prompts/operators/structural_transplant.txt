@@ -1,0 +1,59 @@
+Apply operator structural_transplant at radicality rho to R. Return R' and a
+short change log. Treat R' as a search hypothesis and keep the original
+acceptance rule.
+
+<representation>
+{{REPRESENTATION}}
+</representation>
+
+rho = {{RADICALITY}}
+Caller detail: {{DETAIL}}   ("none" means the choice of subgraph is yours)
+
+This is a crossover operator, so the block above holds two representations in
+order: R1, the one being edited, then R2, the donor drawn from the buffer of
+representations already seen for this problem family. If R2 is absent or has
+no entities there is nothing to transplant and the application is a no-op,
+not an empty edit.
+
+Specification. Extract a connected subgraph H of R2, graft it into R1, and
+attach it at a structurally compatible site.
+
+  Selection. Draw a seed entity uniformly from E2. H is the breadth-first
+  ball around that seed, in id order, of size
+
+    |H|     = min(n2 - 1, floor(rho_hat * n2)) + 1
+    rho_hat = min(rho, rho_max) / rho_max,  rho_max is sampling.rho_max, default 8.0
+
+  over the n2 entities of R2, so |H| grows with rho: this is the operator's
+  radicality, the size of the borrowed structure. rho = 0 still grafts the
+  seed alone.
+
+  Grafting. Every entity of H is copied into E1 with its type, sort and label
+  intact and its id prefixed "t_", suffixed further if that collides. Every
+  relation of R2 with both endpoints in H is copied over the renamed ids.
+  Relations of R2 that leave H are dropped.
+
+  Attachment site. The R1 entity that shares the role type of the graft root,
+  most connected first with ties broken by id; if no R1 entity has that type,
+  the most connected entity of R1. A single relates(site, root) edge joins
+  the graft to R1, so the transplanted structure hangs off the host rather
+  than floating.
+
+  A, G and F stay those of R1. The transplant adds auxiliary structure to the
+  original problem; it does not replace the problem.
+
+Worked example. R1 is an array-manipulation coding problem whose hub entity
+is arr (type input, degree 4). R2 is a graph-algorithm problem holding a
+priority-queue substructure: pq (input), key (parameter), pop (output), with
+part_of(key, pq) and derived_from(pop, pq). At rho = 2.0 and n2 = 6,
+rho_hat = 0.25 and |H| = floor(0.25 * 6) + 1 = 2, so H is the ball {pq, key}.
+R' gains t_pq and t_key with part_of(t_key, t_pq), plus relates(arr, t_pq).
+The candidate is still expected to answer the original array question -- the
+priority queue is an auxiliary structure the solver may or may not use.
+
+Return, in this order:
+
+1. the JSON object for R', in the same schema the parser emits, inside a
+   ```json fence;
+2. a line beginning "change log:" naming the graft root, the size of H, and
+   the attachment site.

@@ -1,0 +1,58 @@
+Apply operator reification at radicality rho to R. Return R' and a short
+change log. Treat R' as a search hypothesis and keep the original acceptance
+rule.
+
+<representation>
+{{REPRESENTATION}}
+</representation>
+
+rho = {{RADICALITY}}
+Caller detail: {{DETAIL}}   ("none" means the choice of relation is yours)
+
+Specification. Take a relation (e_i, e_j, p) from Rel and promote its
+predicate p to an entity of its own.
+
+  New entity. e_p is added to E with id "p_<p>_<e_i>_<e_j>" (truncated and
+  suffixed if that collides with an existing id), type "parameter", sort set
+  to the relation type p, and label "reified <p>".
+
+  Rewiring. The original relation is removed and replaced by four edges:
+
+    has(e_i, e_p)        has(e_j, e_p)
+    relates(e_p, e_i)    relates(e_p, e_j)
+
+  The paper writes a single ternary relates(e_p, e_i, e_j). Relation is
+  binary here, so that fact is split into the two participations it asserts,
+  one per argument. Both are needed: with only the e_j edge the reified
+  predicate would lose its first argument, and a later role_swap could no
+  longer see e_i as a participant. Nothing else moves: A, G and F are
+  unchanged.
+
+Radicality does not change what this operator does. A predicate is either an
+entity or it is not; there is no scale between the two, and the paper states
+no radicality semantics for this operator. Exactly one predicate is reified
+per application, whatever rho is. rho is still written into the edit trail so
+the trace stays comparable across operators.
+
+The point of the edit is what it makes possible next: once p is an entity, a
+later type_shifting can retype it, a later assumption_violation can deny a
+statement about it, and a later crossover can transplant it. This is the move
+that historically took functional notation to category-theoretic abstraction.
+
+Worked example. R holds entities t (coordinate, sort "instant") and state
+(variable) with the relation indexes(t, state). Reifying gives the new entity
+
+  {"id": "p_indexes_t_state", "type": "parameter", "sort": "indexes",
+   "label": "reified indexes"}
+
+with has(t, p_indexes_t_state), has(state, p_indexes_t_state),
+relates(p_indexes_t_state, t) and relates(p_indexes_t_state, state) in place
+of indexes(t, state). Time is no longer only an axis: the indexing itself is
+now a thing the next operator can act on.
+
+Return, in this order:
+
+1. the JSON object for R', in the same schema the parser emits, inside a
+   ```json fence;
+2. a line beginning "change log:" naming the relation that was reified and
+   the id of the new entity.

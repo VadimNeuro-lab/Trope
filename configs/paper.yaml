@@ -1,0 +1,13 @@
+
+inherit: default.yaml
+
+run:
+  budget: 64
+  backend: hf
+  backend_model: Qwen/Qwen2.5-7B-Instruct
+  reference_model: Qwen/Qwen2.5-3B-Instruct
+
+distance:
+  encoder_dim: 384
+
+seeds: [1, 2, 3, 4, 5]
