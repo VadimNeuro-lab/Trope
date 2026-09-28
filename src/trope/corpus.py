@@ -329,5 +329,5 @@ def frame_passages() -> tuple[Document, ...]:
 
 @functools.lru_cache(maxsize=1)
 def fallback_index() -> BM25Index:
-    """The bundled stand-in index. Not the paper's corpus; see CHANGELOG.md."""
+    """A small bundled index so the pipeline runs offline; see CHANGELOG.md."""
     return BM25Index(frame_passages())

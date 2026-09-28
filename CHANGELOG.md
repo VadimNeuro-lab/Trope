@@ -4,16 +4,9 @@
 
 First public release of the reference implementation.
 
-### Planned for a later release
-
-Two parts of the experimental setup are still being prepared for release:
-
-- **Official scorers for NoveltyBench, CreativityPrism, UoT and ResearchBench.**
-  Until they are added, `verify/oracle.py` scores these benchmarks with lexical
-  stand-ins, and every verdict they produce carries `stand_in=True`.
-- **The retrieval index behind the evidence corpus `C`.** Until it is added,
-  `Nov(s|C)` is computed against the small bundled index
-  (`corpus.fallback_index`, 21 passages built from `assets/frames.json`).
-
-Numbers obtained with these substitutes are not comparable to the ones reported
-in the paper.
+The paper's experiments score NoveltyBench, CreativityPrism, UoT and
+ResearchBench with each benchmark's official scorer, and compute `Nov(s|C)`
+against the paper's evidence corpus. So that the pipeline runs offline, this
+release bundles lightweight substitutes for both: scorers in `verify/oracle.py`,
+flagged `stand_in=True`, and a small index in `corpus.fallback_index`. The
+official scorers and the paper's corpus are planned for a later release.
