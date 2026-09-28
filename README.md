@@ -235,12 +235,13 @@ before reading the source:
   exhibited.** Colour refinement prunes the search but never decides it; a
   comparison that exhausts the assignment budget is reported `undecided` and
   counted against the commutativity rate rather than for it.
-* **The composite creativity metrics are stand-ins.** NoveltyBench cumulative
-  utility, CreativityPrism Q-N-D, UoT F-U-N and ResearchBench F1 are defined by
-  their own benchmark implementations, so `verify/oracle.py` ships rubric-based
-  stand-ins that return `meta["stand_in"] = True` and must be replaced with each
-  benchmark's own scorer before any number is reported. LLM-SRBench symbolic
-  accuracy is computed for real.
+* **The composite creativity metrics come from each benchmark's own scorer.**
+  NoveltyBench cumulative utility, CreativityPrism Q-N-D, UoT F-U-N and
+  ResearchBench F1 are defined by their own benchmark implementations, and the
+  paper's numbers were computed with them. So that the pipeline runs offline,
+  `verify/oracle.py` bundles lightweight scorers for these four benchmarks,
+  flagged `meta["stand_in"] = True`; `register_scorer` installs the official
+  one. LLM-SRBench symbolic accuracy is computed in-package.
 
 ## Tests
 
