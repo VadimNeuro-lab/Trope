@@ -1,0 +1,14 @@
+{
+  "name": "workset-fitness-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Five-screen fitness tracker: today's workout, workout library, session log, weekly progress and goals.",
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
