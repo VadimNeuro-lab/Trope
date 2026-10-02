@@ -630,10 +630,9 @@ button:disabled {
   aspect-ratio: 5 / 4;
 }
 
-/* Keep the date tag clear of the back and save buttons. */
+/* The hero repeats the date and venue shown below it, and the tag is hard to read over the pattern. */
 .poster--hero .poster-tag {
-  top: 76px;
-  left: var(--gutter);
+  display: none;
 }
 
 /* ---------- Discover ---------- */
@@ -1299,13 +1298,11 @@ button:disabled {
 
 .fact dd strong {
   font-weight: 650;
-  font-variant-numeric: tabular-nums;
 }
 
 .fact dd span {
   color: var(--muted);
   font-size: 14px;
-  font-variant-numeric: tabular-nums;
 }
 
 .fact .link-btn {

@@ -168,9 +168,9 @@ async function noSidewaysScroll(page, where) {
     assert(/^Venue \S/i.test(facts[2] || ''), `venue reads "${facts[2]}"`);
     const paragraphs = await page.$$eval('[aria-labelledby="h-about"] p', (ps) => ps.length);
     assert(paragraphs >= 1, 'description is missing');
-    assert(await page.isVisible('#actionbar [data-action="buy"]'), 'the ticket button is not visible');
+    assert((await page.$('#actionbar [data-action="buy"]')) === null, 'the bottom bar should not have a ticket button');
     assert(await page.isVisible('#actionbar [data-action="toggle-save"]'), 'the save button is not visible');
-    assert(await page.isVisible('.tier'), 'ticket options are missing');
+    assert(await page.isVisible('.tier[data-action="buy"]'), 'ticket options are missing');
     assert(await page.isHidden('#tabbar'), 'the tab bar should hide on the event screen');
     await noSidewaysScroll(page, 'Event');
 
@@ -211,10 +211,10 @@ async function noSidewaysScroll(page, where) {
     await page.click('[data-action="tab"][data-tab="discover"]');
     await page.click('.feature[data-event="e01"] .stretch');
     await page.waitForSelector('#ev-title');
-    await page.click('#actionbar [data-action="buy"]');
+    // Tickets are bought from the ticket options; the balcony card opens checkout with balcony selected.
+    await page.click('.tier[data-tier="bal"]');
     await page.waitForSelector('.sheet input[name="tier"]');
-
-    await page.check('.sheet input[name="tier"][value="bal"]');
+    assert(await page.isChecked('.sheet input[name="tier"][value="bal"]'), 'the chosen ticket type is not preselected');
     await page.click('.sheet [data-action="qty"][data-delta="1"]');
     assert((await page.textContent('#qty-out')).trim() === '2', 'quantity did not change to 2');
     // Balcony is $45; the fee is 10% + $1.50 = $6.00 a ticket.
@@ -244,8 +244,7 @@ async function noSidewaysScroll(page, where) {
     await page.fill('#q', 'synth');
     await page.click('#results .row .stretch');
     await page.waitForSelector('#ev-title');
-    assert((await page.textContent('#actionbar [data-action="buy"]')).trim() === 'Reserve a spot', 'free events should offer a reservation');
-    await page.click('#actionbar [data-action="buy"]');
+    await page.click('.tier[data-action="buy"]');
     await page.click('.sheet [data-action="checkout-next"]');
     assert((await page.$('.sheet input[name="paycard"]')) === null, 'a free reservation should not ask for a card');
     await page.click('.sheet [data-action="pay"]');

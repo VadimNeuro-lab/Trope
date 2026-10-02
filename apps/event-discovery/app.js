@@ -748,14 +748,10 @@
     const free = e.maxPrice === 0;
     const from = store.prefs.allIn && e.minPrice ? e.minPrice + feeFor(e.minPrice) : e.minPrice;
     const feeNote = e.minPrice === 0 ? '' : store.prefs.allIn ? 'incl. fees' : '+ fees';
-    const soldOut = e.tiers.every((t) => remaining(e, t) === 0);
     return `<div class="ab-price"><span>${free ? 'Entry' : 'Tickets from'}</span><strong>${esc(money(from))}${
       feeNote ? ` <small>${feeNote}</small>` : ''
     }</strong></div>
-      ${saveBtn(e, 'square-btn')}
-      <button type="button" class="btn btn-primary" data-action="buy" data-id="${e.id}" ${soldOut ? 'disabled' : ''}>${
-      soldOut ? 'Sold out' : free ? 'Reserve a spot' : 'Get tickets'
-    }</button>`;
+      ${saveBtn(e, 'square-btn')}`;
   }
 
   // ---------- Screen 4: Saved ----------
