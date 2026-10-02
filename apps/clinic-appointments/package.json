@@ -1,0 +1,15 @@
+{
+  "name": "linden-clinic-appointments",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Clinic appointment app: browse doctors by specialty, book a time after reviewing it, and view or cancel upcoming appointments. No build step.",
+  "scripts": {
+    "start": "node scripts/serve.cjs",
+    "test": "node --test 'tests/*.test.js' && node tests/user-stories.cjs",
+    "test:unit": "node --test 'tests/*.test.js'",
+    "screenshots": "node scripts/capture.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}

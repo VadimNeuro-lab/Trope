@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f3f6fa" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d141f" media="(prefers-color-scheme: dark)">
+<title>Linden Clinic</title>
+<link rel="preload" href="fonts/PlusJakartaSans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <main id="screen" class="screen"></main>
+</div>
+<div id="dock" class="dock"></div>
+<div id="sheet-root"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<noscript><p class="noscript">Linden Clinic needs JavaScript to run.</p></noscript>
+<script src="src/data.js"></script>
+<script src="src/schedule.js"></script>
+<script src="src/store.js"></script>
+<script src="src/app.js"></script>
+</body>
+</html>
