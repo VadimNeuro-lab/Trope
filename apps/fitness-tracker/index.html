@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Workset</title>
     <meta name="description" content="Plan today's workout, log your sets, and track weekly training progress and goals." />
+    <meta name="theme-color" content="#edf0f3" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0c1016" media="(prefers-color-scheme: dark)" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Workset" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,12 +24,14 @@
     <script type="module" src="src/main.js"></script>
   </head>
   <body>
-    <div class="shell">
-      <nav id="nav" class="nav" aria-label="Main"></nav>
+    <div class="device">
+      <header id="appbar" class="appbar"></header>
       <main id="screen" class="screen" tabindex="-1">
         <noscript><p>Workset needs JavaScript. Turn it on and reload the page.</p></noscript>
       </main>
+      <nav id="nav" class="tabbar" aria-label="Main"></nav>
+      <div id="sheet" class="sheet-layer"></div>
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
     </div>
-    <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </body>
 </html>

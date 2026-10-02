@@ -25,7 +25,7 @@ import { emptyState, pageHeader } from '../components.js';
 
 export const title = 'Log';
 
-export const initialUi = () => ({ picker: false, errors: [], confirmDiscard: false });
+export const initialUi = () => ({ picker: false, pickerQuery: '', errors: [], confirmDiscard: false });
 
 /** The draft in progress, or a new one based on today's plan. */
 function currentDraft(state, today) {
@@ -40,7 +40,8 @@ function totalsText(draft) {
   const t = draftTotals(draft);
   const parts = [`${t.exercises} ${t.exercises === 1 ? 'exercise' : 'exercises'}`, `${t.sets} ${t.sets === 1 ? 'set' : 'sets'}`];
   if (t.volume > 0) parts.push(formatVolume(t.volume, draft.units));
-  return parts.join(' · ');
+  // Keep each figure with its unit; lines may only break between figures.
+  return parts.map((p) => p.replace(/ /g, '\u00a0')).join(' · ');
 }
 
 function lastTimeText(sessions, exercise, draft) {
@@ -106,23 +107,53 @@ function exerciseBlock(exercise, draft, sessions) {
   </section>`;
 }
 
-function picker() {
-  return html`<div class="card picker">
-    <label class="field">
-      <span class="field-label">Exercise</span>
-      <select id="picker-select">
-        ${MUSCLE_GROUPS.map(
-          (g) => html`<optgroup label="${g.label}">
-            ${EXERCISES.filter((e) => e.group === g.id).map((e) => html`<option value="${e.id}">${e.name}</option>`)}
-          </optgroup>`,
-        )}
-      </select>
-    </label>
-    <div class="picker-actions">
-      <button type="button" class="btn btn-primary" data-action="log:add-exercise">Add exercise</button>
-      <button type="button" class="btn btn-quiet" data-action="log:close-picker">Cancel</button>
-    </div>
-  </div>`;
+function matchesQuery(exercise, query) {
+  const q = query.trim().toLowerCase();
+  return !q || `${exercise.name} ${exercise.equipment}`.toLowerCase().includes(q);
+}
+
+/** Bottom sheet for choosing an exercise, grouped by muscle group and searchable. */
+export function sheet({ ui }) {
+  const u = ui.log;
+  if (!u.picker) return '';
+  const groups = MUSCLE_GROUPS.map((g) => ({
+    g,
+    list: EXERCISES.filter((e) => e.group === g.id && matchesQuery(e, u.pickerQuery)),
+  })).filter((x) => x.list.length);
+  return html`<button type="button" class="sheet-backdrop" tabindex="-1" aria-label="Close" data-action="log:close-picker"></button>
+    <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="picker-title" tabindex="-1">
+      <span class="sheet-handle" aria-hidden="true"></span>
+      <div class="sheet-head">
+        <h2 class="sheet-title" id="picker-title">Add exercise</h2>
+        <button type="button" class="btn btn-quiet btn-small" data-action="log:close-picker" data-sheet-dismiss>Done</button>
+      </div>
+      <label class="search">
+        ${icon('search')}
+        <span class="sr-only">Search exercises</span>
+        <input id="picker-search" type="search" placeholder="Search exercises" autocomplete="off" value="${u.pickerQuery}" data-input="log:picker-query" />
+      </label>
+      <div class="sheet-body">
+        ${
+          groups.length
+            ? groups.map(
+                ({ g, list }) => html`<section class="picker-group" aria-labelledby="pick-${g.id}">
+                  <h3 class="picker-group-title" id="pick-${g.id}">${g.label}</h3>
+                  <ul class="picker-list">
+                    ${list.map(
+                      (e) => html`<li>
+                        <button type="button" class="picker-item" data-action="log:pick" data-id="${e.id}">
+                          <span class="picker-item-name">${e.name}</span>
+                          <span class="picker-item-meta">${e.equipment}${e.measure === 'time' ? ' · timed' : ''}</span>
+                        </button>
+                      </li>`,
+                    )}
+                  </ul>
+                </section>`,
+              )
+            : html`<p class="muted">No exercises match “${u.pickerQuery.trim()}”.</p>`
+        }
+      </div>
+    </section>`;
 }
 
 export function render({ state, today, ui }) {
@@ -174,11 +205,7 @@ export function render({ state, today, ui }) {
           ? draft.exercises.map((e) => exerciseBlock(e, draft, state.sessions))
           : emptyState({ title: 'No exercises yet', body: 'Add the exercises you did, or start from a routine above.' })
       }
-      ${
-        u.picker
-          ? picker()
-          : html`<button type="button" class="btn btn-secondary btn-block" data-action="log:open-picker">${icon('plus')}Add exercise</button>`
-      }
+      <button type="button" class="btn btn-secondary btn-block" data-action="log:open-picker">${icon('plus')}Add exercise</button>
 
       <label class="field field-wide card log-notes">
         <span class="field-label">Notes</span>
@@ -194,14 +221,15 @@ export function render({ state, today, ui }) {
           : ''
       }
 
+      <div class="discard-row">
+        <button type="button" class="${cx('btn', 'btn-small', u.confirmDiscard ? 'btn-danger' : 'btn-quiet-danger')}" data-action="log:discard">
+          ${u.confirmDiscard ? 'Tap again to discard' : 'Discard draft'}
+        </button>
+      </div>
+
       <div class="action-bar log-bar">
         <p class="log-totals" id="log-totals" aria-live="polite">${totalsText(draft)}</p>
-        <div class="log-bar-actions">
-          <button type="button" class="${cx('btn', u.confirmDiscard ? 'btn-danger' : 'btn-quiet')}" data-action="log:discard">
-            ${u.confirmDiscard ? 'Confirm discard' : 'Discard'}
-          </button>
-          <button type="submit" class="btn btn-primary">${icon('check')}Save session</button>
-        </div>
+        <button type="submit" class="btn btn-primary">${icon('check')}Save session</button>
       </div>
     </form>`;
 }
@@ -244,20 +272,25 @@ export const handlers = {
     edit(app, (d) => removeExercise(d, el.dataset.ex));
   },
   'log:open-picker'(app) {
-    app.ui.log.picker = true;
+    Object.assign(app.ui.log, { picker: true, pickerQuery: '' });
     app.render();
-    app.focus('#picker-select');
+    app.focus('.sheet');
   },
   'log:close-picker'(app) {
     app.ui.log.picker = false;
     app.render();
+    app.focus('[data-action="log:open-picker"]');
   },
-  'log:add-exercise'(app) {
-    const id = document.getElementById('picker-select').value;
+  'log:picker-query'(app, el) {
+    app.ui.log.pickerQuery = el.value;
+    app.render();
+  },
+  'log:pick'(app, el) {
     app.ui.log.picker = false;
-    edit(app, (d) => addExercise(d, id));
+    edit(app, (d) => addExercise(d, el.dataset.id));
     const added = app.store.state.draft.exercises.at(-1);
-    app.focus(`#w-${added.sets[0].key}`);
+    app.toast(`Added ${added.name}`);
+    document.getElementById(`title-${added.key}`)?.scrollIntoView({ block: 'center' });
   },
   'log:discard'(app) {
     if (!app.ui.log.confirmDiscard) {

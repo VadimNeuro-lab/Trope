@@ -12,6 +12,8 @@ import { deltaText, linkArrow, meter, pageHeader, prescription, sampleNotice, se
 
 export const title = 'Today';
 
+export const appbarAction = () => html`<a class="icon-btn" href="#log" aria-label="Log a session">${icon('plus')}</a>`;
+
 function greeting(now) {
   const h = now.getHours();
   if (h >= 5 && h < 12) return 'Good morning';

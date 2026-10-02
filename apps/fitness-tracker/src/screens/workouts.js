@@ -26,6 +26,9 @@ import { emptyState, levelBadge, pageHeader, prescription } from '../components.
 
 export const title = 'Workouts';
 
+/** On a routine's page the top bar shows the routine's name. */
+export const appbarTitle = ({ route }) => (route.param ? (getWorkout(route.param)?.name ?? 'Workout') : title);
+
 export const initialUi = () => ({ view: 'routines', category: 'all', level: 'all', query: '', group: 'all' });
 
 function matches(workout, query) {
@@ -194,14 +197,12 @@ function scheduledDays(state, workoutId) {
 
 function detail({ state, today }, workout) {
   if (!workout) {
-    return html`<a class="back-link" href="#workouts">${icon('back')}Workouts</a>
-      ${emptyState({ title: 'Workout not found', body: 'This routine is not in the library. Pick another one from the list.' })}`;
+    return html`${emptyState({ title: 'Workout not found', body: 'This routine is not in the library. Pick another one from the list.' })}`;
   }
   const units = state.profile.units;
   const isToday = plannedWorkoutId(state, today) === workout.id;
   const days = scheduledDays(state, workout.id);
-  return html`<a class="back-link" href="#workouts">${icon('back')}Workouts</a>
-    ${pageHeader({ eyebrow: workoutKicker(workout), title: workout.name, sub: workout.summary })}
+  return html`${pageHeader({ eyebrow: workoutKicker(workout), title: workout.name, sub: workout.summary })}
     <dl class="detail-stats card">
       <div><dt>Duration</dt><dd>${workout.minutes} min</dd></div>
       <div><dt>Exercises</dt><dd>${workout.exercises.length}</dd></div>

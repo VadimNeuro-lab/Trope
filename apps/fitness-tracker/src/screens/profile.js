@@ -252,6 +252,26 @@ function notificationsSection(state) {
   </section>`;
 }
 
+const INSTALL_TEXT = {
+  installed: ['Installed', 'Workset is on your Home Screen and works without a connection.'],
+  prompt: ['Install Workset', 'Add it to your Home Screen. It opens full screen and works offline.'],
+  ios: ['Add to Home Screen', 'In Safari, tap Share, then Add to Home Screen. It opens full screen and works offline.'],
+  manual: ['Add to Home Screen', "Open this page on your phone and choose Add to Home Screen from the browser's menu."],
+};
+
+function installSection(status) {
+  if (!INSTALL_TEXT[status]) return '';
+  const [heading, help] = INSTALL_TEXT[status];
+  return html`<section class="profile-section" aria-labelledby="section-app">
+    <h2 class="section-title" id="section-app">App</h2>
+    <div class="card install-row">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div class="setting-text"><p class="setting-title">${heading}</p><p class="setting-help">${help}</p></div>
+      ${status === 'prompt' ? html`<button type="button" class="btn btn-primary btn-small" data-action="app:install">Install</button>` : ''}
+    </div>
+  </section>`;
+}
+
 function settingsSection(state, ui, storageOk) {
   const { profile } = state;
   const samples = state.sessions.filter((s) => s.sample).length;
@@ -320,7 +340,7 @@ function settingsSection(state, ui, storageOk) {
   </section>`;
 }
 
-export function render({ state, today, ui, storageOk }) {
+export function render({ state, today, ui, storageOk, install }) {
   return html`${pageHeader({ title: 'Profile' })}
     ${profileHead(state)}
     <div class="profile-grid">
@@ -328,6 +348,7 @@ export function render({ state, today, ui, storageOk }) {
       <div class="profile-column">
         ${preferencesSection(state)}
         ${notificationsSection(state)}
+        ${installSection(install)}
         ${settingsSection(state, ui.profile, storageOk)}
       </div>
     </div>`;
