@@ -1,4 +1,6 @@
-// Set C - clinic booking "Linden Clinic". Five screens + confirmation state, two variants (improved / weak).
+// Set C - clinic booking "Linden Clinic". Five screens + confirmation state, two variants:
+//   improved - guided 4-step flow, large actions, full details on every step
+//   weak     - same flow and data in a plainer list UI with weaker hierarchy and smaller controls
 (function () {
   const { icon, statusBar, homeIndicator, tabbar } = K;
   const TIME = '9:41';
@@ -17,6 +19,13 @@
     { name: 'Dr. Laura Chen', ini: 'LC', bg: '#FBEEDB', fg: '#B45309', rating: '4.7', reviews: 61, years: 15, next: 'Fri 16 Oct, 14:30' },
   ];
   const DOC = DOCS[0];
+  const UPCOMING = [
+    { doc: 'Dr. James Okafor', spec: 'General Practice', dow: 'TUE', day: 6, date: 'Tue, 6 Oct', time: '09:15', place: 'Floor 2, Room 204' },
+    { doc: 'Dr. Sophie Laurent', spec: 'Ophthalmology', dow: 'THU', day: 22, date: 'Thu, 22 Oct', time: '14:00', place: 'Floor 1, Room 112' },
+  ];
+  const ADDRESS = 'Linden Clinic, 24 Harbour Street, Floor 3';
+  const navBar = (t) => `<div class="w-nav"><span class="l">${icon('chevron-left', { size: 26, sw: 2.2 })}</span>${t}</div>`;
+  const wChev = `<span style="color:#A9B6B9">${icon('chevron-right', { size: 18, sw: 2 })}</span>`;
   const avatar = (d, size = 56) => `<div class="avatar" style="width:${size}px;height:${size}px;font-size:${Math.round(size * 0.34)}px;background:${d.bg};color:${d.fg}">${d.ini}</div>`;
   const flowHead = (step) => `
     <div class="flowbar"><span class="back">${icon('arrow-left', { size: 22, sw: 2.2 })}</span><span class="step">Step ${step} of 4</span></div>
@@ -27,19 +36,18 @@
     if (v === 'weak') {
       return shell(`
       <div class="content">
-        <div class="topline"><span style="font-size:15px;font-weight:600;color:var(--ink-2)">Linden Clinic</span><div class="avatar" style="width:34px;height:34px;font-size:12.5px;background:var(--primary-soft);color:var(--primary)">SM</div></div>
+        <div class="topline"><div class="brand" style="font-size:15.5px"><span class="logo" style="width:30px;height:30px;border-radius:9px">${icon('leaf', { size: 16, sw: 2.2 })}</span>Linden Clinic</div><div class="avatar" style="width:34px;height:34px;font-size:12.5px;background:var(--primary-soft);color:var(--primary)">SM</div></div>
         <h1 style="font-size:23px;font-weight:700;margin-top:18px;letter-spacing:-0.3px">Hello, Sarah</h1>
-        <div class="w-grid">
-          <div>${icon('calendar-plus', { size: 24 })}Book appointment</div>
-          <div>${icon('stethoscope', { size: 24 })}Doctors</div>
-          <div>${icon('calendar-days', { size: 24 })}Appointments</div>
-          <div>${icon('message-circle', { size: 24 })}Messages</div>
+        <button class="btn-primary w-btn" style="margin-top:14px">${icon('calendar-plus', { size: 18, sw: 2.2 })}Book appointment</button>
+        <p class="w-cap">Upcoming</p>
+        <div class="card w-box">
+          ${UPCOMING.map((u) => `<div class="w-li"><div style="flex:1"><b>${u.doc}</b><small>${u.spec} · ${u.date}, ${u.time}</small></div>${wChev}</div>`).join('')}
         </div>
-        <p style="font-size:13px;font-weight:600;color:var(--ink-3);margin:24px 0 8px">Upcoming</p>
-        <div class="card" style="padding:14px 16px;border-radius:14px">
-          <div style="font-size:15px;font-weight:600">Dr. James Okafor</div>
-          <div style="font-size:13px;color:var(--ink-3);margin-top:3px">General Practice</div>
-          <div style="font-size:13px;color:var(--ink-3);margin-top:8px">Tue, 6 Oct · 09:15</div>
+        <p class="w-cap">Services</p>
+        <div class="card w-box">
+          <div class="w-li">${icon('stethoscope', { size: 20, sw: 2, style: 'color:var(--primary)' })}<b style="flex:1">Doctors</b>${wChev}</div>
+          <div class="w-li">${icon('calendar-days', { size: 20, sw: 2, style: 'color:var(--primary)' })}<b style="flex:1">Appointments</b>${wChev}</div>
+          <div class="w-li">${icon('message-circle', { size: 20, sw: 2, style: 'color:var(--primary)' })}<b style="flex:1">Messages</b><span class="w-badge">2</span>${wChev}</div>
         </div>
       </div>`, 'home');
     }
@@ -55,22 +63,22 @@
         <div style="flex:1"><b>Book appointment</b><small>Choose a specialist and a time</small></div>
         ${icon('chevron-right', { size: 24, sw: 2.4 })}
       </div>
-      <section style="margin-top:28px">
-        <div class="sec-head"><h3>Upcoming appointment</h3><span>See all</span></div>
+      <section style="margin-top:24px">
+        <div class="sec-head"><h3>Upcoming appointments</h3><span>See all</span></div>
+        ${UPCOMING.map((u) => `
         <div class="card appt">
-          <div class="dateblock"><small>TUE</small><b>6</b><small>OCT</small></div>
+          <div class="dateblock"><small>${u.dow}</small><b>${u.day}</b><small>OCT</small></div>
           <div style="flex:1;min-width:0">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><h4>Dr. James Okafor</h4><span class="status">Confirmed</span></div>
-            <div class="spec">General Practice</div>
-            <div class="when"><span>${icon('clock', { size: 16, sw: 2.2 })}09:15</span><span>${icon('map-pin', { size: 16, sw: 2.2 })}Floor 2, Room 204</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><h4>${u.doc}</h4><span class="status">Confirmed</span></div>
+            <div class="spec">${u.spec}</div>
+            <div class="when"><span>${icon('clock', { size: 16, sw: 2.2 })}${u.time}</span><span>${icon('map-pin', { size: 16, sw: 2.2 })}${u.place}</span></div>
           </div>
-        </div>
+        </div>`).join('')}
       </section>
-      <section style="margin-top:28px">
-        <div class="sec-head"><h3>Quick access</h3></div>
+      <section style="margin-top:22px">
         <div class="tiles">
-          <div class="card tile"><span class="ti" style="background:var(--primary-soft);color:var(--primary)">${icon('stethoscope', { size: 24, sw: 2 })}</span><b>Doctors</b><small>All specialists</small></div>
-          <div class="card tile"><span class="ti" style="background:#E6EEFB;color:#1D4ED8">${icon('calendar-days', { size: 24, sw: 2 })}</span><b>Appointments</b><small>1 upcoming</small></div>
+          <div class="card tile"><span class="ti" style="background:var(--primary-soft);color:var(--primary)">${icon('stethoscope', { size: 24, sw: 2 })}</span><b>Doctors</b><small>28 doctors</small></div>
+          <div class="card tile"><span class="ti" style="background:#E6EEFB;color:#1D4ED8">${icon('calendar-days', { size: 24, sw: 2 })}</span><b>Appointments</b><small>2 upcoming</small></div>
           <div class="card tile"><span class="count">2</span><span class="ti" style="background:#FBEEDB;color:#B45309">${icon('message-circle', { size: 24, sw: 2 })}</span><b>Messages</b><small>2 unread</small></div>
         </div>
       </section>
@@ -79,20 +87,22 @@
 
   // ---------------- CHOOSE SPECIALTY ----------------
   const SPECS = [
-    ['General Practice', 'Check-ups and everyday health', 'stethoscope'],
-    ['Dermatology', 'Skin, hair and nails', 'hand'],
-    ['Cardiology', 'Heart and blood pressure', 'heart-pulse'],
-    ['Dentistry', 'Teeth and gums', 'smile'],
-    ['Ophthalmology', 'Eyes and vision', 'eye'],
+    ['General Practice', 'Everyday health', 'stethoscope', 8],
+    ['Dermatology', 'Skin, hair, nails', 'hand', 3],
+    ['Cardiology', 'Heart health', 'heart-pulse', 4],
+    ['Dentistry', 'Teeth and gums', 'smile', 6],
+    ['Ophthalmology', 'Eyes and vision', 'eye', 2],
+    ['Pediatrics', "Children's health", 'baby', 5],
   ];
   const specialty = (v) => {
     if (v === 'weak') {
       return shell(`
       <div class="content">
-        <div class="w-nav"><span class="l">${icon('chevron-left', { size: 26, sw: 2.2 })}</span>New appointment</div>
-        <p style="font-size:15px;font-weight:600;margin:18px 0 6px">Select specialty</p>
-        <div class="w-list">
-          ${SPECS.map(([n, d, ic]) => `<div class="it" style="justify-content:flex-start;gap:12px;padding:13px 2px"><span style="color:var(--ink-3)">${icon(ic, { size: 20, sw: 1.8 })}</span><span style="flex:1"><span style="display:block">${n}</span><span style="display:block;font-size:12px;color:#A3B0B3;margin-top:2px">${d}</span></span><span style="color:#B5C1C4">${icon('chevron-right', { size: 18, sw: 2 })}</span></div>`).join('')}
+        ${navBar('New appointment')}
+        <div class="w-search">${icon('search', { size: 18, sw: 2 })}Search</div>
+        <p class="w-cap">Specialties</p>
+        <div class="card w-box">
+          ${SPECS.map(([n, d, ic, c]) => `<div class="w-li">${icon(ic, { size: 20, sw: 1.9, style: 'color:var(--ink-2)' })}<div style="flex:1"><b>${n}</b><small>${d}</small></div><span class="w-count">${c} doctors</span>${wChev}</div>`).join('')}
         </div>
       </div>`);
     }
@@ -101,13 +111,14 @@
       ${flowHead(1)}
       <h1 class="h1">Choose a specialty</h1>
       <p class="lead">What kind of care do you need?</p>
-      <div class="search">${icon('search', { size: 20, sw: 2.2 })}Search specialties</div>
-      <div class="spec-list">
-        ${SPECS.map(([n, d, ic]) => `
-        <div class="card sp ${n === 'Dermatology' ? 'sel' : ''}">
-          <span class="si">${icon(ic, { size: 23, sw: 2 })}</span>
-          <div><b>${n}</b><small>${d}</small></div>
-          <span class="radio">${n === 'Dermatology' ? icon('check', { size: 15, sw: 3 }) : ''}</span>
+      <div class="search">${icon('search', { size: 20, sw: 2.2 })}Search specialty or doctor</div>
+      <div class="spec-grid">
+        ${SPECS.map(([n, d, ic, c]) => `
+        <div class="card sg ${n === 'Dermatology' ? 'sel' : ''}">
+          ${n === 'Dermatology' ? `<span class="tick">${icon('check', { size: 14, sw: 3 })}</span>` : ''}
+          <span class="si">${icon(ic, { size: 22, sw: 2 })}</span>
+          <b>${n}</b><small>${d}</small>
+          <span class="cnt">${c} doctors</span>
         </div>`).join('')}
       </div>
     </div>
@@ -121,16 +132,18 @@
     if (v === 'weak') {
       return shell(`
       <div class="content">
-        <div class="w-nav"><span class="l">${icon('chevron-left', { size: 26, sw: 2.2 })}</span>Dermatology</div>
-        <p style="font-size:13px;color:var(--ink-3);margin:12px 0 10px">3 doctors</p>
-        <div>
-          ${DOCS.map((d) => `
-          <div class="card" style="display:flex;align-items:center;gap:12px;padding:16px 14px;margin-bottom:10px;border-radius:14px">
-            ${avatar(d, 52)}
-            <div style="flex:1"><div style="font-size:15px;font-weight:650">${d.name}</div><div style="font-size:13px;color:var(--ink-3);margin-top:2px">Dermatologist</div><div style="font-size:12.5px;color:var(--ink-3);margin-top:4px">★ ${d.rating} · ${d.reviews} reviews</div></div>
-            <span style="font-size:13.5px;font-weight:600;color:var(--primary)">Select</span>
-          </div>`).join('')}
-        </div>
+        ${navBar('Dermatology')}
+        <p class="w-cap" style="margin-top:12px">3 doctors</p>
+        ${DOCS.map((d) => `
+        <div class="card w-doc">
+          ${avatar(d, 48)}
+          <div style="flex:1;min-width:0">
+            <b>${d.name}</b>
+            <small>Dermatologist · ${d.years} yrs exp.</small>
+            <small>Next: ${d.next}</small>
+          </div>
+          <span class="w-select">Select</span>
+        </div>`).join('')}
       </div>`);
     }
     return `<div class="screen">${statusBar(TIME)}
@@ -163,19 +176,19 @@
   const AFTERNOON = [['13:30'], ['14:00'], ['15:30', 'taken']];
   const datetime = (v) => {
     if (v === 'weak') {
-      const slot = (t) => `<span style="height:36px;border-radius:9px;border:1px solid ${t === '10:30' ? 'var(--primary)' : 'var(--line)'};background:#fff;display:flex;align-items:center;justify-content:center;font-size:13.5px;font-weight:${t === '10:30' ? 700 : 500};color:${t === '10:30' ? 'var(--primary)' : 'var(--ink)'}">${t}</span>`;
+      const free = [...MORNING, ...AFTERNOON].filter(([, st]) => st !== 'taken');
       return `<div class="screen">${statusBar(TIME)}
       <div class="content">
-        <div class="w-nav"><span class="l">${icon('chevron-left', { size: 26, sw: 2.2 })}</span>Date & time</div>
-        <p style="font-size:13.5px;color:var(--ink-3);margin-top:10px">Dr. Emily Hart · Dermatology</p>
-        <p style="font-size:13px;font-weight:600;color:var(--ink-2);margin:18px 0 6px">Date</p>
-        <div style="height:44px;border-radius:10px;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:15px">Tue, 13 Oct 2026 ${icon('chevron-down', { size: 18, sw: 2, style: 'color:var(--ink-3)' })}</div>
-        <p style="font-size:13px;font-weight:600;color:var(--ink-2);margin:20px 0 8px">Time</p>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
-          ${['09:30', '10:30', '11:00', '11:30', '13:30', '14:00'].map(slot).join('')}
+        ${navBar('Date & time')}
+        <p class="w-sub" style="margin-top:8px">${DOC.name} · Dermatology</p>
+        <p class="w-cap">October 2026</p>
+        <div class="w-dates">
+          ${DAYS.map(([d, n]) => `<div class="${n === 13 ? 'on' : ''} ${d === 'Sat' || d === 'Sun' ? 'off' : ''}"><small>${d}</small><b>${n}</b></div>`).join('')}
         </div>
+        <p class="w-cap">Available times</p>
+        <div class="w-slots">${free.map(([t, st]) => `<span class="${st === 'sel' ? 'on' : ''}">${t}</span>`).join('')}</div>
       </div>
-      <div style="position:absolute;left:20px;right:20px;bottom:44px"><button class="btn-primary" style="height:48px;font-size:15.5px;box-shadow:none">Continue</button></div>
+      <div style="position:absolute;left:20px;right:20px;bottom:44px"><button class="btn-primary w-btn">Continue</button></div>
       ${homeIndicator()}</div>`;
     }
     const slot = ([t, s]) => `<span class="slot ${s || ''}">${s === 'sel' ? icon('check', { size: 16, sw: 3 }) : ''}${t}</span>`;
@@ -205,15 +218,17 @@
   const drow = (ic, l, val) => `<div class="drow"><span class="di">${icon(ic, { size: 18, sw: 2.2 })}</span><div><small>${l}</small><b>${val}</b></div></div>`;
   const confirm = (v) => {
     if (v === 'weak') {
-      const r = (l, val) => `<div style="display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line);font-size:14.5px"><span style="color:var(--ink-3)">${l}</span><span style="font-weight:600">${val}</span></div>`;
+      const r = (l, val) => `<div class="w-kv"><span>${l}</span><b>${val}</b></div>`;
       return `<div class="screen">${statusBar(TIME)}
       <div class="content">
-        <div class="w-nav"><span class="l">${icon('chevron-left', { size: 26, sw: 2.2 })}</span>Confirm appointment</div>
-        <div class="card" style="margin-top:16px;padding:4px 16px;border-radius:14px">
-          ${r('Doctor', DOC.name)}${r('Specialty', 'Dermatology')}${r('Date', 'Tue, 13 Oct 2026')}<div style="display:flex;justify-content:space-between;padding:13px 0;font-size:14.5px"><span style="color:var(--ink-3)">Time</span><span style="font-weight:600">10:30</span></div>
+        ${navBar('Confirm appointment')}
+        <p class="w-cap" style="margin-top:14px">Appointment details</p>
+        <div class="card w-box">
+          ${r('Doctor', DOC.name)}${r('Specialty', 'Dermatology')}${r('Date', 'Tue, 13 Oct 2026')}${r('Time', '10:30')}${r('Location', 'Linden Clinic, 24 Harbour St.')}
         </div>
+        <p class="w-sub" style="margin-top:12px">You can cancel up to 24 hours before the visit.</p>
       </div>
-      <div style="position:absolute;left:20px;right:20px;bottom:44px"><button class="btn-primary" style="height:48px;font-size:15.5px;box-shadow:none">Confirm</button></div>
+      <div style="position:absolute;left:20px;right:20px;bottom:44px"><button class="btn-primary w-btn">Confirm booking</button></div>
       ${homeIndicator()}</div>`;
     }
     return `<div class="screen">${statusBar(TIME)}
@@ -225,7 +240,7 @@
         <div class="who">${avatar(DOC, 50)}<div><b>${DOC.name}</b><small>Dermatology</small></div></div>
         ${drow('calendar', 'Date', 'Tuesday, 13 October 2026')}
         ${drow('clock', 'Time', '10:30 – 10:50')}
-        ${drow('map-pin', 'In-person visit', 'Linden Clinic, 24 Harbour Street, Floor 3')}
+        ${drow('map-pin', 'In-person visit', ADDRESS)}
       </div>
       <div class="field-label">Reason for visit<span>Optional</span></div>
       <div class="textarea">Mole check on my left shoulder</div>
@@ -246,7 +261,7 @@
         <div class="who">${avatar(DOC, 50)}<div><b>${DOC.name}</b><small>Dermatology</small></div></div>
         ${drow('calendar', 'Date', 'Tuesday, 13 October 2026')}
         ${drow('clock', 'Time', '10:30 – 10:50')}
-        ${drow('map-pin', 'In-person visit', 'Linden Clinic, 24 Harbour Street, Floor 3')}
+        ${drow('map-pin', 'In-person visit', ADDRESS)}
       </div>
     </div>
     <div style="position:absolute;left:20px;right:20px;bottom:42px">
