@@ -1,0 +1,14 @@
+{
+  "name": "trope-ui-screens",
+  "private": true,
+  "type": "module",
+  "description": "Mobile UI screenshot sets (recipes, fitness, clinic) rendered with Playwright",
+  "scripts": {
+    "food": "node recipes/food/generate.mjs",
+    "render": "node render.mjs",
+    "render:390": "node render.mjs --scale 1"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1"
+  }
+}
